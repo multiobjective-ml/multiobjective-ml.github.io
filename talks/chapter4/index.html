@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Designing CNNs for Secure Inference</title>
+        <meta name="author" content="Vishnu Boddeti">
+
+        <link rel="stylesheet" href="../../assets/revealjs/dist/reset.css">
+        <link rel="stylesheet" href="../../assets/revealjs/dist/reveal.css">
+        <link rel="stylesheet" href="../../assets/revealjs/dist/theme/vishnu.css" id="theme">
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/highlight/monokai.css" id="highlight-theme">
+
+        <!-- CDN for plotly and fontawesome -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://kit.fontawesome.com/7a9386c7a8.js" crossorigin="anonymous"></script>
+
+        <!-- Theme used for syntax highlighted code -->
+        <style>
+            .reveal code,
+            .reveal .formula-source,
+            .reveal a {
+                color: #3F988E;
+            }
+            .reveal code {
+                padding: 0 0.25em;
+            }
+            .reveal pre.formula-source {
+                box-shadow: none;
+                font-size: 0.8em;
+            }
+            .reveal .formula,
+            .reveal .formula-source {
+                margin: 2.5rem 0;
+            }
+            .reveal li {
+                margin: 0.65em 0;
+            }
+            .reveal .formula.bigger {
+                font-size: 1.8em;
+            }
+
+            /*https://medium.com/@mandieq/beautiful-presentations-from-markdown-who-knew-it-could-be-so-easy-d279aa7f787a*/
+
+            #left {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                float: left;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #right {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                float: right;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #center {
+                margin-left: auto;
+                margin-right: auto;
+                float: center;
+                text-align: center;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #alert {
+                background-color: #ff9800;
+                padding: 10px;
+            }
+
+            #customers {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            #customers td, #customers th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            /*#customers tr:nth-child(even){background-color: #f2f2f2;}*/
+            #customers tr:hover {background-color: #000000;}
+            #customers th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              background-color: #4CAF50;
+              color: white;
+            }
+
+            #mytable {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            #mytable td, #mytable th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            /*#mytable tr:nth-child(even){background-color: #f2f2f2;}*/
+            #mytable tr:hover {background-color: #000000;}
+            #mytable th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              color: white;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+
+                <!-- Color ramp: ["#559EB1", "#6DB28B", "#8CBB68", "#AFBD4F", "#CFB541", "#E39B39", "#E56E30"] -->
+
+<section data-background-iframe="../../../assets/viz/gradient/">
+    <p class="title">Designing CNNs for Secure Inference</p>
+    <br>
+    <p class="subtitle"> CVPR Tutorial </p>
+    <p class="author"> Vishnu Boddeti </p>
+    <p class="date">June 19, 2023</p>
+    <p><i class="fab fa-twitter"></i> VishnuBoddeti</p>
+</section>
+
+            </div>
+        </div>
+        <script src="../../assets/revealjs/dist/reveal.js"></script>
+        <script src="../../assets/revealjs/plugin/notes/notes.js"></script>
+        <script src="../../assets/revealjs/plugin/markdown/markdown.js"></script>
+        <script src="../../assets/revealjs/plugin/highlight/highlight.js"></script>        
+        <script src="../../assets/revealjs/plugin/search/search.js"></script>
+        <script src="../../assets/revealjs/plugin/zoom/zoom.js"></script>
+        <script src="../../assets/revealjs/plugin/math/math.js"></script>
+        
+        <script src="../../assets/revealjs/plugin/menu/menu.js"></script>        
+        <script src="../../assets/revealjs/plugin/pdfexport/pdfexport.js"></script>
+
+        <!-- chalkboard -->
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/chalkboard/style.css">
+        <script src="../../assets/revealjs/plugin/chalkboard/plugin.js"></script>
+
+        <!-- customcontrols -->
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/customcontrols/style.css">
+        <script src="../../assets/revealjs/plugin/customcontrols/plugin.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins/menu/font-awesome/css/fontawesome.css">
+
+        <!-- chart -->
+        <script src="../../assets/revealjs/plugin/chart/Chart.min.js"></script>
+        <script src="../../assets/revealjs/plugin/chart/plugin.js"></script>
+
+        <!-- font awesome -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins/menu/font-awesome/css/fontawesome.css">
+
+        <script>
+          Reveal.initialize({
+              controls: false,
+              progress: true,
+              history: true,
+              center: true,
+              mouseWheel: true,
+              hash: true,
+              autoPlayMedia: true,
+              transition: 'fade',
+
+              math: {
+                mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
+                config: 'TeX-AMS_HTML-full',
+                // pass other options into `MathJax.Hub.Config()`
+                TeX: { Macros: { RR: "{\\bf R}" } }
+              },
+
+              chalkboard: {
+                  src: "",
+                  eraser: { src: path + 'img/sponge.png', radius: 20},
+                boardmarkers : [
+                        { color: 'rgba(255,220,0,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'},
+                        { color: 'rgba(30,144,255, 1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                        { color: 'rgba(220,20,60,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                        { color: 'rgba(50,205,50,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                        { color: 'rgba(255,140,0,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                        { color: 'rgba(100,100,100,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                        { color: 'rgba(150,0,20150,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'}
+                ],
+                chalks: [
+                        { color: 'rgba(255,255,255,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                        { color: 'rgba(96, 154, 244, 0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                        { color: 'rgba(237, 20, 28, 0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                        { color: 'rgba(20, 237, 28, 0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                        { color: 'rgba(220, 133, 41, 0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                        { color: 'rgba(220,0,220,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                        { color: 'rgba(255,220,0,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+                ]
+              },
+
+              chart: {
+                defaults: {
+                  global: {
+                    title: { fontColor: "#FFF" },
+                    legend: {
+                      labels: { fontColor: "#FFF" },
+                    },
+                  },
+                  scale: {
+                    scaleLabel: { fontColor: "#FFF" },
+                    gridLines: { color: "#FFF", zeroLineColor: "#FFF" },
+                    ticks: { fontColor: "#FFF" },
+                  }
+                },
+                line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ]},
+                bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+                pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+                radar: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+              },
+
+              customcontrols: {
+                controls: [
+                    {
+                      id: 'toggle-overview',
+                      title: 'Toggle overview (O)',
+                      icon: '<i class="fa fa-th" style="color:#5DA8A3"></i>',
+                      action: 'Reveal.toggleOverview();'
+                    },
+                    { icon: '<i class="fa fa-pen-square" style="color:#5DA8A3"></i>',
+                      title: 'Toggle chalkboard (B)',
+                      action: 'RevealChalkboard.toggleChalkboard();'
+                    },
+                    { icon: '<i class="fa fa-pen" style="color:#5DA8A3"></i>',
+                      title: 'Toggle notes canvas (C)',
+                      action: 'RevealChalkboard.toggleNotesCanvas();'
+                    }
+                ]
+              },
+
+              plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealSearch, RevealChalkboard, RevealZoom, RevealMath, RevealMenu, PdfExport, RevealChart ]
+          });
+        </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49985752-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-49985752-2');
+</script>
+
+    </body>
+</html>

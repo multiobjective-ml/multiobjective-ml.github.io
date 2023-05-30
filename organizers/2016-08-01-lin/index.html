@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8"/>
+	<!-- <title>Vishnu Boddeti</title> -->
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+
+  	<!-- Customized Bootstrap + Font Awesome + Solarized -->
+  	<link href="/css/style.css" rel="stylesheet" media="screen">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="/assets/images/icons/icon-1.png"/>
+
+	<!-- Typekit -->
+	<script>
+		(function(d) {
+		var config = {
+			kitId: 'xeu8jut',
+			scriptTimeout: 3000
+		},
+		h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='//use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+		})(document);
+	</script>
+
+	<!-- MathJax -->
+	<!-- <script>
+		MathJax = {
+			tex: { inlineMath: [['$', '$'], ["\\(","\\)"]]},
+			svg: { fontCache: 'global' }
+		};
+	</script>
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script> -->
+
+	<!--KaTeX-->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			renderMathInElement(document.body, {
+				// customised options
+				// • auto-render specific keys, e.g.:
+				delimiters: [
+					{left: '$$', right: '$$', display: true},
+					{left: '$', right: '$', display: false},
+					{left: '\\(', right: '\\)', display: false},
+					{left: '\\[', right: '\\]', display: true}
+				],
+				// • rendering keys, e.g.:
+				throwOnError : false
+			});
+		});
+	</script>
+	<script>
+		window.WebFontConfig = {
+		  custom: {
+			families: ['KaTeX_AMS', 'KaTeX_Caligraphic:n4,n7', 'KaTeX_Fraktur:n4,n7',
+			  'KaTeX_Main:n4,n7,i4,i7', 'KaTeX_Math:i4,i7', 'KaTeX_Script',
+			  'KaTeX_SansSerif:n4,n7,i4', 'KaTeX_Size1', 'KaTeX_Size2', 'KaTeX_Size3',
+			  'KaTeX_Size4', 'KaTeX_Typewriter'],
+		  },
+		};
+	</script>
+	<script defer src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script>	
+
+	<script type="text/javascript"
+  		src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js">
+	</script>
+	<script>
+		$(document).ready(function() {
+			mermaid.initialize();
+		});
+	</script>
+
+	<!-- jQuery -->
+	<script src="/js/jquery.min.js"></script>
+
+	<!-- Bootstrap -->
+	<script src="/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<div id="header">
+		<nav class="navbar navbar-expand-md navbar-light bg-navbar">
+			<div class="container">
+				
+				<a class="navbar-brand" href="/">
+					<img class="logo navbar-brand d-inline-block align-top ml-0 mr-1" src="/assets/images/icons/icon-1.png">
+					<!-- <a class="navbar-brand" href="/">Multiobjective Machine Learning</a> -->
+				</a>
+				
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<!-- <div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav nav-pills ml-auto">
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter1/">Chapter 1</a>
+						</li>
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter2/">Chapter 2</a>
+						</li>
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter3/">Chapter 3</a>
+						</li>
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter4/">Chapter 4</a>
+						</li>
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter5/">Chapter 5</a>
+						</li>
+					</ul>
+				</div> -->
+			</div>
+		</nav>
+	</div>
+
+	<div class="container mt-4">
+
+	
+
+<div class="row">
+	<div class="col-lg-12">
+		
+		<img class="pull-left pad-right media-object d-none d-sm-block" width=120 src="/assets/images/team/cropped-vishnu-boddeti.jpg">
+		
+		<div class="titlebox">
+			<div class="bigtitle">
+				Vishnu Boddeti
+			</div>
+			<p>
+			<div class="smallhead">
+				Principal Investigator
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bigspacer"></div>
+
+<div class="row">
+	<div class="col-lg-3">
+		
+		
+		<div class="smallhead">
+			Twitter
+		</div>
+		<div class="pad-left note">
+			<div class="smallspacer"></div>
+			<i class="fa fa-twitter fa-fw"></i>
+			<a class="off" href="https://twitter.com/VishnuBoddeti">VishnuBoddeti</a>
+		</div>
+		<div class="bigspacer"></div>
+		
+		
+		<div class="smallhead">
+			GitHub
+		</div>
+		<div class="pad-left note">
+			<div class="smallspacer"></div>
+			<i class="fa fa-github-alt fa-fw"></i>
+			<a class="off" href="https://github.com/vboddeti">vboddeti</a>
+		</div>
+		<div class="bigspacer"></div>
+		
+		
+		<div class="smallhead">
+			Google Scholar
+		</div>
+		<div class="pad-left note">
+			<div class="smallspacer"></div>
+			<i class="fa fa-book fa-fw"></i>
+			<a class="off" href="http://scholar.google.com/citations?user=JKcrO9IAAAAJ">Vishnu Boddeti</a>
+		</div>
+		<div class="bigspacer"></div>
+		
+		
+		
+		<div class="smallhead">
+			Website
+		</div>
+		<div class="pad-left note">
+			<div class="smallspacer"></div>
+			<i class="fa fa-globe fa-fw"></i>
+			<a class="off" href="http://vishnu.boddeti.net">vishnu.boddeti.net</a>
+		</div>
+		<div class="bigspacer"></div>
+		
+		
+		
+		<div class="smallhead">
+			Email
+		</div>
+		<div class="pad-left note">
+			<div class="smallspacer"></div>
+			<i class="fa fa-inbox fa-fw"></i>
+			firstname<span style="display:none">obfuscate</span>@msu.edu
+		</div>
+		<div class="bigspacer"></div>
+		
+	</div>
+	<div class="col-lg-8">
+		<div class="post">
+			<p>I’m an Assistant Professor in the <a href="http://www.cse.msu.edu">Computer Science Department</a> at <a href="http://www.msu.edu/">Michigan State University</a>. My research is focused on the intersection of Computer Vision, Biometrics, and Machine Learning. Specifically, I build computational models for analyzing human attributes, behaviors, and interactions from data.</p>
+
+<p>I received my bachelor’s degree from the Indian Institute of Technology, Madras, and my Ph.D. from Carnegie Mellon University, advised by <a href="http://users.ece.cmu.edu/~kumar">Vijayakumar Bhgavatula</a>. Following my Ph.D., I was a Postdoctoral Fellow in the Robotics Institute at Carnegie Mellon University where I worked with <a href="http://www.ri.cmu.edu/person.html?person_id=136">Takeo Kanade</a>.</p>
+
+		</div>
+
+		
+		
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+	</div>
+	<div class="col-lg-1"></div>
+</div>
+
+
+	</div>
+
+	<div id="footer"><span style="display:none">foo</span></div>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49985752-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-49985752-2');
+</script>
+
+
+</body>
+</html>

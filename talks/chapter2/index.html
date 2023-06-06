@@ -15,6 +15,10 @@
         <link rel="stylesheet" href="../../assets/revealjs/dist/theme/vishnu.css" id="theme">
         <link rel="stylesheet" href="../../assets/revealjs/plugin/highlight/monokai.css" id="highlight-theme">
 
+        <!-- tikzjax -->
+        <link rel="stylesheet" type="text/css" href="../../assets/tikzjax/fonts.css">
+        <script src="../../assets/tikzjax/tikzjax.js"></script>
+
         <!-- CDN for plotly and fontawesome -->
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script src="https://kit.fontawesome.com/7a9386c7a8.js" crossorigin="anonymous"></script>
@@ -115,6 +119,23 @@
               text-align: left;
               color: white;
             }
+
+            .box {
+              width: 300px;
+              background-color: #333333;
+              border: 2px solid #ccc;
+              border-radius: 5px;
+              padding: 0px;
+              margin: 0px;
+              color:#eeeeec;
+            }
+          
+            .box-header {
+              background-color: #337ab7;
+              color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
         </style>
     </head>
 
@@ -173,12 +194,17 @@
               hash: true,
               autoPlayMedia: true,
               transition: 'fade',
+              touch: true,
 
-              math: {
-                mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
-                config: 'TeX-AMS_HTML-full',
-                // pass other options into `MathJax.Hub.Config()`
-                TeX: { Macros: { RR: "{\\bf R}" } }
+              katex: {
+                version: 'latest',
+                delimiters: [
+                  {left: '$$', right: '$$', display: true},
+                  {left: '$', right: '$', display: false},
+                  {left: '\\(', right: '\\)', display: false},
+                  {left: '\\[', right: '\\]', display: true}
+               ],
+               ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre']
               },
 
               chalkboard: {
@@ -243,7 +269,7 @@
                 ]
               },
 
-              plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealSearch, RevealChalkboard, RevealZoom, RevealMath, RevealMenu, PdfExport, RevealChart ]
+              plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealSearch, RevealChalkboard, RevealZoom, RevealMath.KaTeX, RevealMenu, PdfExport, RevealChart ]
           });
         </script>
 

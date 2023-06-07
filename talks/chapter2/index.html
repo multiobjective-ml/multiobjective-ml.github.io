@@ -155,6 +155,524 @@
     <p class="date">June 19, 2023</p>
 </section>
 
+<section>
+    <h2 class="r-fit-text">Review: Need an introductory slide here</h2>
+    <figure><img src="/assets/images/talks/404.png" alt="" width="60%"></figure>
+</section>
+
+<section>
+    <h2 class="r-fit-text">MOEA/D=Decomposition + Collaboration</h2>
+    <ul>
+        <li>Decomposition (from traditional opt)</li>
+        <ul>
+            <li>Decompose <span style="color:orange">the task</span> of approximating the PF into <span style="color:orange">$N$ subproblems</span>. Each subproblem can be single-objective or multiobjective.</li>
+        </ul>
+        <li>Collaboration (from swarm Intelligence and evolutionary computation)</li>
+        <ul>
+            <li>$N$ agents (procedures) are used.  Each agent is for a different subproblem.</li>
+            <li>These $N$ subproblems are related to one another. $N$ agents can solve these subproblems in a collaborative manner.</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+    <h2>Major Issues</h2>
+    <figure>
+        <img src="/assets/images/talks/moead/1.svg" alt="" width="50%">
+    </figure>
+    <ul>
+        <ul>
+            <li>Problem decomposition and neighborhood structure.</li>
+            <li>Search method used by each agent: memory and reproduction operators.</li>
+            <li>Collaboration: mating selection and replacement.</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>Basic MOEA/D</h2>
+</section>
+
+<section>
+    <h2>Tchebycheff Approach</h2>
+    <div id="left" style="width:60%;">
+        <div class="box" style="width:100%;font-size:75%">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$
+                    \begin{aligned}
+                        \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) \\
+                        g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) &= \max\{ \lambda_1 |f_1(\mathbf{x}) - z_1^{*}|, \lambda_2| f_2(\mathbf{x}) - z_2^{*}|\} \\
+                        \mathbf{z}^{*} &= (z_1^*, z_2^*) \text{ is a Utopian point. } \\
+                        & z_1^{*} < \min f_1 \text{ and } z_2^{*} < \min f_2
+                    \end{aligned}
+                $$
+            </div>
+        </div>
+    </div>
+    <div id="right" style="width:35%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_2a.svg" width="80%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <br>
+            <li>For any Pareto optimal solution $\mathbf{x}^{*}$, there is a $\lambda$ such that $\mathbf{x}^{*}$ is optimal to the above problem.</li>
+            <br>
+            <li> $g^T(\mathbf{x},\lambda)$ is not smooth w.r.t. $\mathbf{x}$,$\lambda$.</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Weighted $L_p$ Approach</h2>
+    <div id="left" style="width:70%">
+        <div class="box" style="width:90%;font-size:75%">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$\begin{equation}
+                    \begin{aligned}
+                        \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) \\
+                        \text{ where } & g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) = \left(\lambda_1| f_1(\mathbf{x}) - z_1^{*}|^p + \lambda_2| f_2(\mathbf{x}) - z_2^{*}|^p\right)^{\frac{1}{p}} \\
+                        \mathbf{z}^{*} &= (z_1^*, z_2^*) \text{ is a Utopian point.} \nonumber
+                    \end{aligned}
+                \end{equation}$$
+            </div>
+        </div>
+        <ul>
+            <li style="color:cyan">$p=1:$ weighted sum</li>
+            <li style="color:cyan">$p=\infty:$ Tchebycheff</li>
+        </ul>
+    </div>
+    <div id="right" style="width:30%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_2b.svg" alt="" width="100%">
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Neighboring Subproblems</h2>
+    <ul>
+        <li><b>Neighborhood:</b> measure the relationship among the subtasks</li>
+        <ul>
+            <li>Two subproblems are neighbors if their weight vectors are close.</li>
+            <li>Neighbouring subproblems should have similar objective functions and thus similar optimal solutions with high probability.
+                <center><figure><img src="/assets/images/talks/moead/slide_2c.svg" alt="" width="30%"></figure></center>
+            </li>
+            <li>Many different ways for defining neighborhood structure.</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Decomposition, Neighborhood and Memory</h2>
+    <div id="left" style="width:75%;">
+    <ul>
+        <li>At each generation, each agent does the following:</li>
+        <ul>
+            <li><span style="color:orange;">Mating selection:</span> obtain the current solutions of some neighbours <span style="color: orange;">(collaboration)</span>.</li>
+            <li><span style="color:orange;">Reproduction:</span> generate a new solution by applying <span style="color:orange">reproduction operators</span> on its own solution and borrowed solutions.</li>
+        </ul>
+    </ul>
+    </div>
+    <div id="right" style="width:25%;">
+        <figure>
+            <!-- <img src="/assets/images/talks/moead-4.png" alt="" width="50%"> -->
+            <img src="/assets/images/talks/404.png" alt="" width="90%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <ul>
+                <li><span style="color:orange">Replacement:</span></li>
+                <ul>
+                    <li>Replace its old solution by the new one if the new one is better than old one for its objective.</li>
+                    <li>Pass the new solution on to some of its neighbours, each of them replaces its old solution by this new one if it is better for its objective <span style="color:orange;">(collaboration, neighbourhood)</span>.</li>
+                </ul>
+            </ul>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Dynamic Resource Allocation</h2>
+    <ul>
+        <ul>
+            <li>Different subproblems (agents) require different amounts of computational resources.</li>
+            <br>
+            <li>Each subproblem (agent) has a utility value, which measures the likelihood of further improvement:
+                \[
+                Utility = \frac{\text{The amount of improvement obtained}}{\text{The amount of computational resources used}}
+                \]
+            </li>
+            <br>
+            <li>At each generation, a small number of agents are selected based on utility values and receive computational resources.</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+    <h2>Additional Remarks</h2>
+    <ul>
+        <ul>
+            <li>Diversity among subproblems leads to diversity among $\{\mathbf{x}^1, \mathbf{x}^2,\dots,\mathbf{x}^N\}$</li>
+            <br>
+            <li>MOEA/D has a well-organized memory.</li>
+            <br>
+            <li>Each agent can adopt other search methods such as heuristics (e.g., EDA, ACO and tabu search) or gradient based search.</li>
+            <br>
+            <li>Agents can be divided into several groups. Each group share some common info such as probability models.</li>
+        </ul>
+    </ul>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>More on Decomposition Methods</h2>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Penalty based boundary interaction (PBI) (Zhang & Li 2007)</h2>
+    <div id="left" style="width:50%">
+        <div class="box" style="width:100%;">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$
+                \begin{aligned}
+                \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) = d_1 + \theta d_2 \\
+                s.t. & x \in \Omega
+                \end{aligned}
+                $$
+            </div>
+            <ul>
+                <li>$\mathbf{z}^*,\lambda$ define a line direction.</li>
+                <li>$\theta > 0$ is the penalty parameter</li>
+            </ul>
+        </div>
+    </div>
+    <div id="right" style="width:50%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_4a.svg" alt="" width="75%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <ul>
+                <li>$\theta \rightarrow \infty \Rightarrow \text{PBI} \rightarrow$ NBI (Normal boundary Interaction) (Das, 1998).</li>
+                <li>Different Pareto optimal solutions can be obtained by using different direction lines.</li>
+            </ul>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Penalty based boundary interaction (PBI) (Zhang & Li 2007)</h2>
+    <div id="left" style="width:50%">
+        <ul>
+            <li>Diversity and Convergence:</li>
+        </ul>
+        <div class="box" style="width:100%;">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$
+                \begin{aligned}
+                \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) = d_1 + \theta d_2 \\
+                s.t. \text{ } & x \in \Omega
+                \end{aligned}
+                $$
+            </div>
+            <ul>
+                <li>$d_1$: <span style="color:orange;">convergence</span></li>
+                <li>$d_2$: <span style="color:orange;">diversity</span></li>
+            </ul>
+        </div>
+    </div>
+    <div id="right" style="width:50%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_4b.svg" alt="" width="80%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <li>It has been used in EMO algorithm design such as in:</li>
+            <ul>
+                <li>I-DBEA (2015)</li>
+                <li>MOEA/D-DU (2016)</li>
+                <li>$\theta$-DEA (2016)</li>
+            </ul>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Penalty based boundary interaction (PBI) (Zhang & Li 2007)</h2>
+    <div id="left" style="width:50%">
+        <ul>
+            <li>Other Variants:</li>
+        </ul>
+        <div class="box" style="width:100%;">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$
+                \begin{aligned}
+                \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) = d_1 + \theta d_2 \\
+                s.t. \text{ } & x \in \Omega
+                \end{aligned}
+                $$
+            </div>
+        </div>
+    </div>
+    <div id="right" style="width:50%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_4c.svg" alt="" width="75%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <ul>
+                <li>$d_2$ can be replace by $\alpha$ (Chen et al, 2016)</li>
+                <li>$g$ can be replaced by other functions (Ishibuchi et al, 2016, Chen et al 2016)</li>
+                <li>NSGA-III = Pareto dominance (for convergence) + decomposition ($d_2$ for diversity) (Deb et al, 2013).</li>
+            </ul>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Inverted PBI (IPBI, Sato 2014)</h2>
+    <div id="left" style="width:50%">
+        <div class="box" style="width:100%">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                \[
+                    \max g^{IPBI}(x|\lambda, z^*) = d_1 - \theta d_2
+                \]
+                <ul><li style="font-size:75%;">$z^+$ should be above the PF (nadir point)</li></ul>
+            </div>
+        </div>
+        <br>
+        <ul>
+            <li>Difference between PBI and IPBI:</li>
+            <ul>
+                <li>When PF=ABC, some different subproblems in IPBI have the same optimal solutions.</li>
+                <li>When PF=DEF, some different subproblems in PBI have the same optimal solutions.</li>
+            </ul>
+        </ul>
+    </div>
+    <div id="right" style="width:50%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_5b.svg" alt="" width="60%">
+        </figure>
+        <figure>
+            <img src="/assets/images/talks/moead/slide_5a.svg" alt="" width="75%">
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Constrained Decomposition</h2>
+    <figure><img src="/assets/images/talks/moead/slide_5c.svg" alt="" width="70%"></figure>
+    <div id="left" style="width:45%;">
+        <ul style="font-size:70%;">
+            <li>Single objective decomposition  (Wang et al, 2015)</li>
+            <center>
+            <div class="box" style="width:75%">
+                <div class="box-header">Optimization Problem</div>
+                <div class="box-content">
+                    $$
+                        \begin{aligned}
+                            \min g(x) &= aggregation(f_1, f_2) \\
+                            s.t. \text{ } & F(x) \in \Omega_i
+                        \end{aligned}
+                    $$
+                </div>
+            </div>
+            </center>
+        </ul>
+        <ul style="font-size:70%;"><li>Good for diversity</li></ul>
+    </div>
+    <div id="right" style="width:55%;">
+        <ul style="font-size:70%;">
+            <li>Multiple-objective to multiple-objective (M2M) (Liu et al, 2014)</li>
+            <center>
+            <div class="box" style="width:50%">
+                <div class="box-header">Optimization Problem</div>
+                <div class="box-content">
+                    $$
+                        \begin{aligned}
+                            & \min(f_1, f_2) \\
+                            & s.t. \text{ } F(x) \in \Omega_i
+                        \end{aligned}
+                    $$
+                </div>
+            </div>
+            </center>
+        </ul>
+        <ul style="font-size:75%;"><li><span style="color:orange;">MOEA/D-M2M:</span> Each agent can uses an EMO algorithm.</li></ul>
+    </div>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>Other Variants</h2>
+</section>
+
+<section>
+    <h2>PLS/D for Discrete Optimization</h2>
+    <div id="left" style="width:50%;">
+        <ul>
+            <ul>
+                <li>Decompose the objective space into a number of sub-regions.</li>
+                <li>Each subregion i is associated with an aggregated objective function:
+                    \[
+                        \text{e.g., } g_{ws}(x, w_i) = 0.4f_1(x) + 0.6f_2(x)
+                    \]
+                </li>
+                <li>Agent i searches Subregion i by using a PLS guided by $g_{ws}(x, w_i)$.</li>
+            </ul>
+        </ul>
+    </div>
+    <div id="right" style="width:50%;">
+        <br><br>
+        <script type="text/tikz">
+            \begin{document}
+                \begin{tikzpicture}[domain=0:4.5, very thick]
+
+                \draw[->, white] (0,0) -- (5,0) node[right] {$f_1$};
+                \draw[->, white] (0,0) -- (0,5) node[above] {$f_2$};
+
+                \foreach \x in {0,1,2,3,4,5}
+                    \draw[orange, ->] (0,0) -- ++(18*\x:4cm) node[above right] {\color{orange} $w_{\x}$};
+
+                \foreach \x in {0,1,2,3,4}
+                    \draw[cyan, dashed] (0,0) -- ++(9 + 18*\x:4.5cm) node[above right] {};
+                
+                \end{tikzpicture}
+            \end{document}
+        </script>
+    </div>
+    <div id="left" style="width:100%">
+        <hr>
+        <ul style="font-size:50%;"><li>J. Shi, Q. Zhang, J Sun, PLS/D, IEEE Trans on Cybernetics, 2019</li></ul>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">Performance of PLS/D</h2>
+    <div id="left" style="width:50%;"><img src="/assets/images/talks/moead/results-1.png" alt="" width="80%"></div>
+    <div id="right" style="width:50%;"><img src="/assets/images/talks/moead/results-2.gif" alt="" width="70%"></div>
+    <div id="left" style="width:100%"><center style="color:black">Much faster than basic PLS!</center></div>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black;">Disadvantage of prefixed decomposition</h2>
+    <a href="https://ieeexplore.ieee.org/document/7509682" target="_blank"><img src="/assets/images/talks/moead/disadvantage.png" alt="" style="width:100%;"></a>
+    <div id="left" style="width:75%;">
+        <ul style="color:black;"><li>If the PF shape is unknown,  and very different from a simplex. Use of prefixed uniform search direction lines will waste lots of computational resources, and may not be able to  find a good approximation to the PF.</li></ul>
+    </div>
+    <!-- <div id="right" style="width:25%;"><figure><img src="/assets/images/talks/moead/disadvantage-2.png" alt=""></figure></div> -->
+    <div id="right" style="width:25%;"><figure><img src="/assets/images/talks/404.png" alt="" width="100%"></figure></div>
+</section>
+
+<section>
+    <h2>Adaptive Decomposition</h2>
+    <div id="left" style="width:60%;">
+        <ul style="font-size:100%;">
+            <ul>
+                <li>Estimate the PF shape.</li>
+                <li>Choose a set of target points in the estimated PF.</li>
+                <ul>
+                    <li>Without the DM's preference, the distribution of these target points should be as uniform as possible.</li>
+                    <li>The distribution of these target points can be determined by the DM.</li>
+                </ul>
+                <li>For each target point, construct a subproblem such that its optimal solution = the target point.</li>
+            </ul>
+        </ul>
+    </div>
+    <div id="right" style="width:40%;">
+        <br><br>
+        <figure><img src="/assets/images/talks/moead/slide_6c.svg" alt="" width="100%"></figure>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">MOEA/D-AWA (Qi. et al, 2013)</h2>
+    <div id="left" style="width: 75%;">
+        <ul style="color:black">
+            <li>Tchebycheff decomposition $(\frac{1}{\lambda_1} ,\dots, \frac{1}{\lambda_m})$  is the direction vector. the initial direction vectors should be uniformly distributed in the unit simplex.</li>
+        </ul>
+    </div>
+    <div id="right" style="width: 25%;">
+        <figure><img src="/assets/images/talks/404.png" alt="" width="80%"></figure>
+    </div>
+    <div id="left" style="width:100%">
+        <ul style="color:black;font-size:75%">
+            <ul>
+                <li>Add and delete subproblems based on the distribution of the current solutions in in the objective space.</li>
+                <li>An improved version for discontinuous PF has been proposed (C. Zhang et al 2017).</li>
+            </ul>
+        </ul>
+    </div>
+    <figure><img src="/assets/images/talks/moead/qi-2013.svg" alt="" width="75%"></figure>
+</section>
+
+<section>
+    <h2>More Derivatives of MOEA/D</h2>
+    <ul>
+        <ul>
+            <li>Model PF by a (m-1)-D simplex  (Zhou et al 2009,  Gu et al 2012, Giagkiozis et al 2012,  Deb et al 2013).</li>
+            <li>MOEA/D-par  models PF by $f_1^{p_{(1)}} + f_2^{p_{(2)}} + \dots + f_m^{p_{(m)}}=1$  (S. Jiang et al 2012)</li>
+            <li>Use $L_p$ decomposition, dynamically adjust p-value in each subproblem to maximize the "improvement area"  (Wang et al, 2017)</li>
+            <li>Use SOM on the current population to obtain a set of direction vectors (Gu et al 2017).</li>
+        </ul>
+    </ul>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>Resources</h2>
+</section>
+
+<section data-background="white">
+    <a href="https://sites.google.com/view/moead" target="_"><img src="/assets/images/talks/moead/moead-20.png" alt="" width="80%"></a>
+    
+    <center><a href="https://sites.google.com/view/moead" target="_">MOEA/D Website</a></center>
+</section>
+
+<section data-background="white">
+    <h2 style="color: black;">Survey Papers on MOEA/D</h2>
+    <a href="https://ieeexplore.ieee.org/document/7564425" target="_blank"><img src="/assets/images/talks/moead/survey-1.png" alt="" width="100%" style="border:solid black"></a>
+    <a href="https://link.springer.com/chapter/10.1007/978-3-319-05170-3_31" target="_blank"><img src="/assets/images/talks/moead/survey-2.png" alt="" width="100%" style="border:solid black"></a>
+</section>
+
+<section data-background="white">
+    <h2 style="color: black;">Survey Papers on MOEA/D</h2>
+    <a href="https://ieeexplore.ieee.org/document/8998284" target="_blank"><img src="/assets/images/talks/moead/survey-3.png" alt="" width="75%" style="border:solid black"></a>
+    <a href="https://ieeexplore.ieee.org/document/9022866" target="_blank"><img src="/assets/images/talks/moead/survey-4.png" alt="" width="75%" style="border:solid black"></a>
+</section>
+</section>
+
+<section>
+    <h2>Conclusions</h2>
+    <ul>
+        <ul>
+            <li>MOEA/D= Decomposition + Collaboration, a methodology for multiobjective optimization.</li>
+            <br>
+            <li>Key design issues: decomposition, search method for each agent, collaboration.</li>
+            <br>
+            <li>Different single optimization methods can be readily used in MOEA/D framework.</li>
+            <br>
+            <li>Multiobjective optimization methods can also be integrated in MOEA/D framework.</li>
+        </ul>
+    </ul>
+</section>
+
             </div>
         </div>
         <script src="../../assets/revealjs/dist/reveal.js"></script>

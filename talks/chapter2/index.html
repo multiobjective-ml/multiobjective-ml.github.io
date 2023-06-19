@@ -121,7 +121,7 @@
             }
 
             .box {
-              width: 300px;
+              width: 100%;
               background-color: #333333;
               border: 2px solid #ccc;
               border-radius: 5px;
@@ -133,6 +133,20 @@
             .box-header {
               background-color: #337ab7;
               color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+
+            .red-box-header {
+              background-color: indianred;
+              color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+
+            .green-box-header {
+              background-color: #BAB86C;
+              color: black;
               padding: 5px;
               border-radius: 5px 5px 0 0;
             }
@@ -156,18 +170,14 @@
 </section>
 
 <section>
-    <h2 class="r-fit-text">Review: Need an introductory slide here</h2>
-    <figure><img src="/assets/images/talks/404.png" alt="" width="60%"></figure>
-</section>
-
-<section>
     <h2 class="r-fit-text">MOEA/D=Decomposition + Collaboration</h2>
     <ul>
-        <li>Decomposition (from traditional opt)</li>
+        <li style="color:cyan">Decomposition (from traditional opt)</li>
         <ul>
             <li>Decompose <span style="color:orange">the task</span> of approximating the PF into <span style="color:orange">$N$ subproblems</span>. Each subproblem can be single-objective or multiobjective.</li>
         </ul>
-        <li>Collaboration (from swarm Intelligence and evolutionary computation)</li>
+        <br>
+        <li style="color:yellowgreen">Collaboration (from swarm Intelligence and evolutionary computation)</li>
         <ul>
             <li>$N$ agents (procedures) are used.  Each agent is for a different subproblem.</li>
             <li>These $N$ subproblems are related to one another. $N$ agents can solve these subproblems in a collaborative manner.</li>
@@ -192,6 +202,25 @@
 <section>
 <section data-background="#511EA8">
     <h2>Basic MOEA/D</h2>
+</section>
+
+<section>
+    <h2>Problem Decomposition</h2>
+    <div id="left" style="width:50%">
+        <figurecaption style="font-size:75%;">Weighted Sum Approach</figurecaption>
+        <figure><img src="/assets/images/talks/moead/fig1.svg" alt="" width="60%"></figure>
+    </div>
+    <div id="left" style="width:50%">
+        <br><br>
+        <ul style="font-size:75%;">
+            <li>$\min g^{ws}(x|\lambda) = \lambda_1f_1(x) + \lambda_2f_2(x)$ where $\lambda_1 + \lambda_2 = 1$ and $\lambda_1, \lambda_2 \geq 0$.</li>
+        </ul>
+        <center style="color:orange;font-size:75%">Works only for convex pareto-front.</center>
+    </div>
+    <div id="left" style="width:100%;">
+        <figurecaption style="font-size:75%;color:cyan">Approximation of the Pareto Front $\Rightarrow$ $N$ single objective optimization problems.</figurecaption>
+        <figure><img src="/assets/images/talks/moead/fig2.svg" alt="" width="60%"></figure>
+    </div>
 </section>
 
 <section>
@@ -269,7 +298,6 @@
 
 <section>
     <h2 class="r-fit-text">Decomposition, Neighborhood and Memory</h2>
-    <div id="left" style="width:75%;">
     <ul>
         <li>At each generation, each agent does the following:</li>
         <ul>
@@ -277,13 +305,6 @@
             <li><span style="color:orange;">Reproduction:</span> generate a new solution by applying <span style="color:orange">reproduction operators</span> on its own solution and borrowed solutions.</li>
         </ul>
     </ul>
-    </div>
-    <div id="right" style="width:25%;">
-        <figure>
-            <!-- <img src="/assets/images/talks/moead-4.png" alt="" width="50%"> -->
-            <img src="/assets/images/talks/404.png" alt="" width="90%">
-        </figure>
-    </div>
     <div id="left" style="width:100%;">
         <ul>
             <ul>
@@ -294,6 +315,40 @@
                 </ul>
             </ul>
         </ul>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">Simulation Results</h2>
+    <ul style="color:black;font-size:75%">
+        <li>No of subproblems: 595, Reproduction operators: DE+Mutation</li>
+        <li>No of generation: 500</li>
+    </ul>
+    <div id="left" style="width:50%">
+        <ul style="color:black;font-size:75%">
+            <li>Test instance:</li>
+            <span style="font-size:75%">
+            $$
+            \begin{aligned}
+                f_1 &= cos(0.5x_1\pi)cos(0.5x_x\pi) + \frac{2}{|J_1|}\sum_{j\in J_1}(x_j - 2x_2sin(2\pi x_1 + \frac{j\pi}{n}))^2 \\
+                f_2 &= cos(0.5x_1\pi)sin(0.5x_x\pi) + \frac{2}{|J_2|}\sum_{j\in J_1}(x_j - 2x_2sin(2\pi x_1 + \frac{j\pi}{n}))^2 \\
+                f_3 &= sin(0.5x_1\pi) + \frac{2}{|J_3|}\sum_{j\in J_3}(x_j - 2x_2sin(2\pi x_1 + \frac{j\pi}{n}))^2 \\
+            \end{aligned}
+            $$
+            </span>
+        </ul>
+        <ul style="color:black;font-size:60%">
+            <li>$J_1 = {j|3\leq j \leq n, \text{ and } j-1 \text{ is a multiplication of 3}}$,</li>
+            <li>$J_2 = {j|3\leq j \leq n, \text{ and } j-2 \text{ is a multiplication of 3}}$,</li>
+            <li>$J_3 = {j|3\leq j \leq n, \text{ and } j \text{ is a multiplication of 3}}$</li>
+            <ul style=""><li>Pareto Surface: $x_j = 2x_2\sin(2\pi x_1 + \frac{j\pi}{n}), j=3,\dots,n$</li></ul>
+        </ul>
+    </div>
+    <div id="right" style="width:50%">
+        <figure><img src="/assets/images/talks/moead/image24.gif" alt="" width="90%"></figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <center style="color:red">Very hard and the optimal solution set is very complicated.</center>
     </div>
 </section>
 
@@ -312,6 +367,40 @@
             <li>At each generation, a small number of agents are selected based on utility values and receive computational resources.</li>
         </ul>
     </ul>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">Simulation Results</h2>
+    <div id="left" style="width:50%">
+        <ul style="color:black;font-size:75%">
+            <li>Test instance:</li>
+            <span style="font-size:60%">
+                $$
+                \begin{aligned}
+                    f_1 &= x_1 + \frac{2}{|J_1|}\sum_{j \in J_1}\left(x_j - 0.8x_1\cos\left(6\pi x_1 + \frac{j\pi}{n}\right)\right)^2 \\
+                    f_2 &= 1 - \sqrt{x}_1 + \frac{2}{|J_2|}\sum_{j\in J_2}\left(x_j - 0.8x_1\sin\left(6\pi x_1 + \frac{j\pi}{n}\right)\right)^2\\
+                \end{aligned}
+                $$
+                Pareto Surface: $x_j = \begin{cases}
+                0.8x_1\cos\left(6\pi x_1 + \frac{j\pi}{n}\right)  & j \in J_1 \\
+                0.8x_1\sin\left(6\pi x_1 + \frac{j\pi}{n}\right) & j \in J_2
+                \end{cases}$
+            </span>
+        </ul>
+        <figure><img src="/assets/images/talks/moead/image28.gif" alt="" width="80%"></figure>
+        <figurecaption style="color:black;font-size:75%">MOEA/D</figurecaption>
+    </div>
+    <div id="right" style="width:50%">
+        <br>
+        <ul style="color:black;font-size:75%">
+            <li>No of subproblems: 300</li>
+            <li>Reproduction operators: DE+Mutation</li>
+            <li>No of generation: 100</li>
+        </ul>
+        <br>
+        <figure><img src="/assets/images/talks/moead/image29.gif" alt="" width="80%"></figure>
+        <figurecaption style="color:black;font-size:75%">MOEA/D with dynamic resource allocation</figurecaption>
+    </div>
 </section>
 
 <section>
@@ -523,6 +612,39 @@
 </section>
 
 <section>
+    <h2 class="r-fit-text">MOEA/D for Expensive Multiobjective Optimization</h2>
+    <ul><ul style="font-size:75%;">
+        <li>Expensive opt: function evaluation = expensive computer/physical experiments.</li>
+        <li>The computational budget could be very limited, say, 200 function evaluations.</li>
+        <li>Efficient Global Optimization (Bayesian Optimization) for single optimization problem do the following iteration:</li>
+        <ul>
+            <li>Using the evaluated solutions, build a probabilistic model $p(f│x)$ for objective $f(x)$.</li>
+            <li>Use $p(f|x)$ to define acquisition function $\phi(x)$ (which measures the merits of figure of evaluation of objective $f$ at $x$.</li>
+            <li>Maximize $\phi(x)$ to obtain $\bar{x}$, evaluate it.</li>
+        </ul>
+    </ul></ul>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">Experimental Results</h2>
+    <ul style="color:black;font-size:75%">
+        <li>Experiments:</li>
+        <ul>
+            <li>ZDT3: 2 objectives and 6 decision variables.</li>
+            <li>Computational budget: 150 function evaluations</li>
+        </ul>
+    </ul>
+    <div id="left" style="width:50%;">
+        <figure><img src="/assets/images/talks/moead/image55.gif" alt="" width="100%"></figure>
+        <figurecaption style="font-size:75%;color:black">MOEA/D-EGO (Zhang et al., 2009)</figurecaption>
+    </div>
+    <div id="right" style="width:50%;">
+        <figure><img src="/assets/images/talks/moead/image56.gif" alt="" width="100%"></figure>
+        <figurecaption style="font-size:75%;color:black"> DirHV-EGO (Zhao and Zhang, 2023)</figurecaption>
+    </div>
+</section>
+
+<section>
     <h2>PLS/D for Discrete Optimization</h2>
     <div id="left" style="width:50%;">
         <ul>
@@ -563,73 +685,32 @@
 </section>
 
 <section data-background="white">
-    <h2 style="color:black">Performance of PLS/D</h2>
-    <div id="left" style="width:50%;"><img src="/assets/images/talks/moead/results-1.png" alt="" width="80%"></div>
-    <div id="right" style="width:50%;"><img src="/assets/images/talks/moead/results-2.gif" alt="" width="70%"></div>
-    <div id="left" style="width:100%"><center style="color:black">Much faster than basic PLS!</center></div>
-</section>
-
-<section data-background="white">
-    <h2 class="r-fit-text" style="color:black;">Disadvantage of prefixed decomposition</h2>
-    <a href="https://ieeexplore.ieee.org/document/7509682" target="_blank"><img src="/assets/images/talks/moead/disadvantage.png" alt="" style="width:100%;"></a>
-    <div id="left" style="width:75%;">
-        <ul style="color:black;"><li>If the PF shape is unknown,  and very different from a simplex. Use of prefixed uniform search direction lines will waste lots of computational resources, and may not be able to  find a good approximation to the PF.</li></ul>
+    <h2 style="color:black">Experimental Results</h2>
+    <ul style="color:black;font-size:75%"><ul>
+        <li>Test problem: multiobjective Unconstraint Binary Quadratic Programming</li>
+        <li>Reproduction operators: Pareto local search (PLS)</li>
+        <li>No of variables = 200. No. of objectives: 2 and 3</li>
+        <li>No. of regions = 11 (for 2-obj) and 66 (for 3-obj)</li>
+    </ul></ul>
+    <div id="left" style="width:25%;">
+        <figure><img src="/assets/images/talks/moead/image58.gif" alt="" width="100%"></figure>
+        <figurecaption style="color:black;font-size:75%">classic PLS (2-obj)</figurecaption>
     </div>
-    <!-- <div id="right" style="width:25%;"><figure><img src="/assets/images/talks/moead/disadvantage-2.png" alt=""></figure></div> -->
-    <div id="right" style="width:25%;"><figure><img src="/assets/images/talks/404.png" alt="" width="100%"></figure></div>
-</section>
-
-<section>
-    <h2>Adaptive Decomposition</h2>
-    <div id="left" style="width:60%;">
-        <ul style="font-size:100%;">
-            <ul>
-                <li>Estimate the PF shape.</li>
-                <li>Choose a set of target points in the estimated PF.</li>
-                <ul>
-                    <li>Without the DM's preference, the distribution of these target points should be as uniform as possible.</li>
-                    <li>The distribution of these target points can be determined by the DM.</li>
-                </ul>
-                <li>For each target point, construct a subproblem such that its optimal solution = the target point.</li>
-            </ul>
-        </ul>
+    <div id="left" style="width:25%;">
+        <figure><img src="/assets/images/talks/moead/image59.gif" alt="" width="100%"></figure>
+        <figurecaption style="color:black;font-size:75%">PPLS/D (2-obj)</figurecaption>
     </div>
-    <div id="right" style="width:40%;">
-        <br><br>
-        <figure><img src="/assets/images/talks/moead/slide_6c.svg" alt="" width="100%"></figure>
+    <div id="left" style="width:25%;">
+        <figure><img src="/assets/images/talks/moead/image60.gif" alt="" width="80%"></figure>
+        <figurecaption style="color:black;font-size:75%">classic PLS (3-obj)</figurecaption>
     </div>
-</section>
-
-<section data-background="white">
-    <h2 style="color:black">MOEA/D-AWA (Qi. et al, 2013)</h2>
-    <div id="left" style="width: 75%;">
-        <ul style="color:black">
-            <li>Tchebycheff decomposition $(\frac{1}{\lambda_1} ,\dots, \frac{1}{\lambda_m})$  is the direction vector. the initial direction vectors should be uniformly distributed in the unit simplex.</li>
-        </ul>
+    <div id="left" style="width:25%;">
+        <figure><img src="/assets/images/talks/moead/image61.gif" alt="" width="80%"></figure>
+        <figurecaption style="color:black;font-size:75%">PPLS/D (3-obj)</figurecaption>
     </div>
-    <div id="right" style="width: 25%;">
-        <figure><img src="/assets/images/talks/404.png" alt="" width="80%"></figure>
-    </div>
-    <div id="left" style="width:100%">
-        <ul style="color:black;font-size:75%">
-            <ul>
-                <li>Add and delete subproblems based on the distribution of the current solutions in in the objective space.</li>
-                <li>An improved version for discontinuous PF has been proposed (C. Zhang et al 2017).</li>
-            </ul>
-        </ul>
-    </div>
-    <figure><img src="/assets/images/talks/moead/qi-2013.svg" alt="" width="75%"></figure>
-</section>
-
-<section>
-    <h2>More Derivatives of MOEA/D</h2>
-    <ul>
-        <ul>
-            <li>Model PF by a (m-1)-D simplex  (Zhou et al 2009,  Gu et al 2012, Giagkiozis et al 2012,  Deb et al 2013).</li>
-            <li>MOEA/D-par  models PF by $f_1^{p_{(1)}} + f_2^{p_{(2)}} + \dots + f_m^{p_{(m)}}=1$  (S. Jiang et al 2012)</li>
-            <li>Use $L_p$ decomposition, dynamically adjust p-value in each subproblem to maximize the "improvement area"  (Wang et al, 2017)</li>
-            <li>Use SOM on the current population to obtain a set of direction vectors (Gu et al 2017).</li>
-        </ul>
+    <hr>
+    <ul style="color:black;font-size:50%">
+        <li>PPLS/D: Parallel Pareto Local Search Based on Decomposition, IEEE Transactions on Cybernetics, 2020</li>
     </ul>
 </section>
 </section>

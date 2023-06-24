@@ -321,10 +321,10 @@
     <span class="fragment current-visible" data-fragment-index="0">
     <div id="left" style="width:70%;">
         <br>
-        <div id="left" style="width:50%">
-            <ul><li><span style="color:orange;font-size:150%">A: </span> <span style="font-size:75%;">$\underbrace{\left\|\sum_{i=1}^m \alpha_i\nabla_{\theta}\mathcal{L}_i(\theta)\right\|_2^2}_{\text{Pareto Stationary Solution}}$</span></li></ul>
+        <div id="left" style="width:55%">
+            <ul><li><span style="color:orange;font-size:150%">A: </span> <span style="font-size:75%;">$\underbrace{\left\|\sum_{i=1}^m \alpha_i\nabla_{\theta}\mathcal{L}_i(\theta)\right\|_2^2}_{\text{Pareto Stationary Solution}} = 0$</span></li></ul>
         </div>
-        <div id="right" style="width:50%">
+        <div id="right" style="width:45%">
             <ul><li><span style="color:cyan;font-size:150%">B: </span><span style="font-size:75%;">$\underbrace{d = \sum_{i=1}^m\alpha_i\nabla_{\theta}\mathcal{L}_i(\theta)}_{\text{Valid Gradient Direction}}$</span></li></ul>
         </div>
     </div>
@@ -831,7 +831,7 @@
     <div id="right" style="width:50%;">
         <br>
         <figure><img src="/assets/images/talks/MTL/pareto-set/2.png" alt="" width="100%"></figure>
-        <figurecaption style="color:black">Pareto HyperNetwork (PHN)$^2$</figurecaption>
+        <figurecaption style="color:black">Controllable Pareto MTL$^2$</figurecaption>
     </div>
     <div id="left" style="width:100%;">
         <hr>
@@ -866,7 +866,7 @@
     <div id="left" style="width:25%">
         <figure>
             <img src="/assets/images/talks/MTL/pareto-set/pareto_set_learning.gif" alt="" width="100%">
-            <figurecaption>Pareto MTL</figurecaption>
+            <figurecaption>Pareto Set Learning</figurecaption>
         </figure>
     </div>
 </section>
@@ -1052,7 +1052,7 @@
 
         <script>
           Reveal.initialize({
-              controls: false,
+              controls: true,
               progress: true,
               history: true,
               center: true,

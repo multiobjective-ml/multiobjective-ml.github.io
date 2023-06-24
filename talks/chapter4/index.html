@@ -178,6 +178,7 @@
 
 <section>
     <h2 class="r-fit-text">Fully Homomorphic Encryption (FHE)</h2>
+    <span class="fragment" data-fragment-index="0">
     <div class="box" style="width:100%">
         <div class="box-header" style="font-size:75%;">Representation over Cyclotomic Polynomial Rings</div>
         <div class="box-content">
@@ -186,9 +187,11 @@
             </ul>
         </div>
     </div>
+    </span>
     <br>
     <div id="left" style="width:50%;">
         <center>
+        <span class="fragment" data-fragment-index="1">
         <div class="box" style="width:90%">
             <div class="green-box-header" style="font-size:75%;">FHE Primitives</div>
             <div class="box-content">
@@ -203,10 +206,12 @@
                 </ul>
             </div>
         </div>
+        </span>
         </center>
     </div>
     <div id="right" style="width:50%;">
         <center>
+        <span class="fragment" data-fragment-index="2">
         <div class="box" style="width:90%">
             <div class="green-box-header" style="font-size:75%;">Homomorphic Operations</div>
             <div class="box-content">
@@ -219,16 +224,19 @@
                 </ul>
             </div>
         </div>
+        </span>
         </center>
     </div>
     <div id="left" style="width:100%;">
         <br>
+        <span  class="fragment" data-fragment-index="3">
         <div class="box" style="width:100%;">
             <div class="red-box-header" style="font-size:75%">Activation Functions in FHE</div>
             <div class="box-content" style="font-size:75%;">
                 Non-linear activation functions, like ReLU, are not supported on FHE.
             </div>
         </div>
+        </span>
     </div>
 </section>
 
@@ -302,14 +310,18 @@
 <section data-background="white">
     <h2 style="color:black">Polynomial Approximation of ReLU</h2>
     <div id="left" style="width:50%;">
+        <span class="fragment">
         <ul style="color:black;font-size:75%"><li><b>Low-Degree: <i class="far fa-smile-beam fa-lg"></i> Levels $\Downarrow$, <i class="far fa-sad-cry fa-lg"></i> precision $\Downarrow$</b> </li></ul>
         <figure><img src="/assets/images/talks/autofhe/faster_relu.svg" alt="" width="90%"></figure>
         <ul><ul style="font-size:50%;color:black"><li>Faster CryptoNets: Leveraging Sparsity for Real-World Encrypted Inference</li></ul></ul>
+        </span>
     </div>
     <div id="right" style="width:50%;">
+        <span class="fragment">
         <ul style="color:black;font-size:75%"><li><b>High-Degree: <i class="far fa-sad-cry fa-lg"></i> Levels $\Uparrow$, <i class="far fa-smile-beam fa-lg"></i> precision $\Uparrow$</b> </li></ul>
         <figure><img src="/assets/images/talks/autofhe/minimax_relu.png" alt="" width="90%"></figure>
         <ul><ul style="font-size:50%;color:black"><li>Precise Approximation of Convolutional Neural Networks for Homomorphically Encrypted Data</li></ul></ul>
+        </span>
     </div>
 </section>
 
@@ -349,6 +361,7 @@
         </table>
     </div>
     <div id="right" style="width:50%;">
+        <span class="fragment">
         <center><div id="cnn_fhe_complexity" style="width:90%;"></div></center>
         <script>
             var d3colors = Plotly.d3.scale.category10();
@@ -378,8 +391,10 @@
             }
             Plotly.newPlot('cnn_fhe_complexity', data, layout, config );
         </script>
+        </span>
     </div>
     <div id="left" style="width:100%;">
+        <span class="fragment">
         <div class="box" style="width:100%">
             <div class="box-header">Polynomial Approximation of ReLU</div>
             <div class="box-content">
@@ -389,6 +404,7 @@
                 </ul></ul>
             </div>
         </div>
+        </span>
     </div>
 </section>
 
@@ -435,22 +451,26 @@
     <br>
     <div id="left" style="width:50%;">
         <center>
+        <span class="fragment">
         <div class="box" style="width:90%;">
             <div class="green-box-header">Layerwise Polynomials</div>
             <div class="box-content">
                 <ul style="font-size:75%;"><li>Layerwise mixed-degree polynomial networks leverage layerwise approximation sensitivity to accelerate inference while preserving accuracy.</li></ul>
             </div>
         </div>
+        </span>
         </center>
     </div>
     <div id="right" style="width:50%;">
         <center>
+        <span class="fragment">
         <div class="box" style="width: 90%;">
             <div class="green-box-header">Learn Polynomials and Networks</div>
             <div class="box-content">
                 <ul style="font-size:75%;"><li>Leverage both polynomial approximation of ReLU and learn neural network weights using gradient descent.</li></ul>
             </div>
         </div>
+        </span>
         </center>
     </div>
 </section>
@@ -498,10 +518,8 @@
         </div>
     </div>
     <br>
-    <div id="left" style="width:50%;">
-        <figure><img src="/assets/images/talks/autofhe/mutation.svg" alt="" width="95%"></figure>
-    </div>
     <div id="right" style="width:50%;">
+        <span class="fragment">
         <div class="box" style="background-color:white;">
             <div class="box-header">Search Variables</div>
             <div class="box-content">
@@ -525,6 +543,10 @@
                 </table>
             </div>
         </div>
+        </span>
+    </div>
+    <div id="left" style="width:50%;">
+        <figure class="fragment"><img src="/assets/images/talks/autofhe/mutation.svg" alt="" width="95%"></figure>
     </div>
 </section>
 
@@ -609,7 +631,7 @@
     </div>
 </section>
 
-<section>
+<!-- <section>
     <h2 class="r-fit-text">R-CCDE: Optimize Coefficients via Differentiable Evolution (DE)</h2>
     <div class="box" style="width:100%;">
         <div class="box-header">Differentiable Evolution (DE): a gradient-free optimization</div>
@@ -631,7 +653,7 @@
             <ul><li>where $F\in\mathbb{R}$ is the scaling factor, $CR\in\mathbb{R}$ is the crossover rate, and $\mathcal{U}(0,1)$ is the uniform distribution.</li></ul>
         </div>
     </div>
-</section>
+</section> -->
 
 <section data-background="white">
     <h2 style="color:black">R-CCDE Algorithm</h2>
@@ -977,7 +999,7 @@
 
         <script>
           Reveal.initialize({
-              controls: false,
+              controls: true,
               progress: true,
               history: true,
               center: true,

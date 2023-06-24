@@ -188,6 +188,289 @@
     </div>
 </section>
 
+<section>
+    <h2 class="r-fit-text">Standard Optimization in Deep Learning</h2>
+    <div id="left" style="width:70%;">
+        <ul>
+            <li class="fragment" data-fragment-index="0">Empirical Risk Minimization
+            $$\underset{\theta}{\operatorname{arg min}} \frac{1}{T} \sum_t l\left(f(\mathbf{x}^t;\mathbf{\theta}),\mathbf{y}^t\right) + \lambda\Omega(\mathbf{\theta})$$</li>
+            <ul class="fragment" data-fragment-index="1">
+                <li><b>Goal:</b> find a <span style="color:orange">single</span> optimal solution</li>
+                <li>Differentiable loss functions and regularizer.</li>
+                <ul><li> cross-entropy, hinge loss, MSE, $l_2$, $l_1$, etc.</li></ul>
+            </ul>
+        </ul>
+    </div>
+    <div id="right" style="width:30%;">
+        <figure class="fragment" data-fragment-index="0"><img src="/assets/images/talks/applications/bias-variance.webp" alt="" width="100%"></figure>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Emerging Class of Optimization Problems</h2>
+    <div id="left" style="width:70%;">
+    <ul>
+        <li class="fragment" data-fragment-index="0"><span style="color:cyan">Multi-Objective Optimization</span>
+            $$ \underset{\theta}{\operatorname{arg min}} (f_1(\mathbf{X};\theta), f_2(\mathbf{X};\theta), \ldots, f_k(\mathbf{X};\theta))$$
+        </li>
+        <li class="fragment" data-fragment-index="1"><b>Feature:</b> <span style="color:orange;">objectives may be in conflict with each other</span></li>
+        <li class="fragment" data-fragment-index="2"><b>Goal:</b> find a <span style="color:orange">multiple</span> pareto-optimal solutions</li>
+        <li class="fragment" data-fragment-index="3"><b>Loss functions:</b> may or <span style="color:orange">may not be differentiable</span></li>
+        <li class="fragment" data-fragment-index="4"><b>Optimization variables:</b> continuous, <span style="color:orange">discrete, mixed interger</span>, etc.</li>
+    </ul>
+    </div>
+    <div id="right" style="width:30%;">
+        <br><br>
+        <figure class="fragment" data-fragment-index="0"><img src="/assets/images/talks/introduction/xkcd-388.png" alt="" width="100%"></figure>
+        <figurecaption class="fragment" data-fragment-index="0"><a href="https://xkcd.com/388/">XKCD</a></figurecaption>
+    </div>
+</section>
+
+<section>    
+<section data-background="#511EA8">
+    <h2>Where do multiple objectives arise in machine learning?</h2>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Application (1): Fairness: Utility-Fairness Trade-Off</h2>
+    <div id="left" style="width:70%;">
+        <figure><img src="/assets/images/talks/applications/utility-fairness-trade-off.svg" alt="" width="90%"></figure>
+    </div>
+    <div id="right" style="width:30%;">
+        <br><br><br>
+        <ul><li>Objectives:</li>
+            <ul>
+                <li>accuracy</li>
+                <li>demographic parity violation</li>
+            </ul>
+        </ul>
+    </div>
+    <div id="left" style="width:100%;">
+        <hr>
+        <ul style="font-size:50%">On Characterizing the Trade-off in Invariant Representation Learning, TMLR 2022</ul>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Application (2): Explainability: Accuracy-Explainability Trade-Off</h2>
+    <figure><img src="/assets/images/talks/applications/accuracy-explainability.png" alt="" width="100%"></figure>
+    <br>
+    <center>Objectives: accuracy and ease of interpretability</center>
+    <br><hr>
+    <ul style="font-size:50%">It's Just Not That Simple: An Empirical Study of the Accuracy-Explainability Trade-off in Machine Learning for Public Policy, FAccT 2022</ul>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Application (3): Neural Architecture Search</h2>
+    <figure><img src="/assets/images/talks/introduction/nas.svg" alt="" width="100%"></figure>
+    <br>
+    <center>Objectives: accuracy and latency/FLOPS/memory usage</center>
+    <hr>
+    <ul style="font-size:50%;line-height:50%">
+        <li>Lu <i>et. al.</i> Neural Architecture Transfer, TPAMI 2021</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Application (4): Multi-Task Learning</h2>
+    <figure><img src="/assets/images/talks/MTL/mtl-1.svg" alt="" width="100%"></figure>
+    <br>
+    <center>Objectives: loss for each task</center>
+    <hr>
+    <ul style="font-size:50%;line-height:50%">
+        <li>Sener and Koltun, Multi-Task Learning as Multi-Objective Optimization, NeurIPS 2018.</li>
+    </ul>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Application (5): Neural Networks over Encrypted Data</h2>
+    <figure><img src="/assets/images/talks/autofhe/overview.svg" alt="" width="90%"></figure>
+    <center>Objectives: accuracy and latency</center>
+    <hr>
+    <ul style="font-size:50%;line-height:50%">
+        <li>Wei and Boddeti, AutoFHE: Automated Adaption of CNNs for Efficient Evaluation over FHE, Cryptology ePrint Archive 2023</li>
+    </ul>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black;">Application (6): Discovering Learning Algorithms from Scratch</h2>
+    <div id="left" style="width:60%;">
+        <figure><img src="/assets/images/talks/introduction/automl-zero.png" alt="" width="100%"></figure>
+    </div>
+    <div id="right" style="width:40%;">
+        <figure><img src="/assets/images/talks/applications/moaz.gif" alt="" width="100%"></figure>
+        <figurecaption style="color:black;">Multi-Objective AutoML-Zero</figurecaption>
+    </div>
+    <div id="left" style="width:100%;">
+        <br>
+        <center style="color:black">Objectives: error and complexity of algorithm</center>
+        <hr>
+        <ul style="font-size:50%;color:black"><li>Guha <i>et. al.</i> MOAZ: A Multi-Objective AutoML-Zero Framework, GECCO 2023</li></ul>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black;" class="r-fit-text">Application (7): Learning Robotic Adaptation Policies from Scratch</h2>
+    <div id="left" style="width:40%;">
+        <figure><img src="/assets/images/talks/applications/robotics-multi-objective.png" alt="" width="100%"></figure>
+    </div>
+    <div id="right" style="width:60%;">
+        <br><br><br>
+        <video width="100%" height="auto" controls><source src="/assets/videos/robotics-multi-objective.mp4" type="video/mp4">Your browser does not support the video tag.</video>
+        <br>
+        <center style="color:black">Objectives: reward and simplicity of algorithm</center>
+    </div>
+    <div id="left" style="width:100%;">
+    <hr>
+    <ul style="font-size:50%;color:black"><li>Kelly <i>et. al.</i> Discovering Adaptable Symbolic Algorithms from Scratch, IROS 2023</li></ul>
+    </div>
+</section>
+</section>
+
+<section>
+    <section data-background="#511EA8">
+        <h2>Most Common Solution Multi Objective Optimization</h2>
+    </section>
+
+<section>
+    <h2>Weighted Sum Scalarization</h2>
+    $$
+    \begin{aligned}
+        \min & \text{ } g^{ws}(x|\lambda) = \lambda_1f_1(x) + \lambda_2f_2(x) \\
+        s.t. & \text{ } \lambda_1 + \lambda_2 = 1 \\
+        & \text{ } \lambda_1, \lambda_2 \geq 0
+    \end{aligned}
+    $$
+    <div id="left" style="width:50%;">
+        <figure class="fragment" data-fragment-index="0"><img src="/assets/images/talks/moead/slide_2c.svg" alt="" width="80%"></figure>
+    </div>
+    <div id="right" style="width:50%;">
+        <br><br>
+        <ul class="fragment" data-fragment-index="0">
+            <li>Solve optimization problem separately for each choice of $\lambda$.</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>The problem with scalarization</h2>
+    $$
+    \begin{aligned}
+        \min & \text{ } g^{ws}(x|\lambda) = \lambda_1f_1(x) + \lambda_2f_2(x) \\
+        s.t. & \text{ } \lambda_1 + \lambda_2 = 1 \\
+        & \text{ } \lambda_1, \lambda_2 \geq 0
+    \end{aligned}
+    $$
+    <div id="left" style="width:50%;">
+        <center style="color:yellow" class="fragment" data-fragment-index="0">Convex Pareto Front</center>
+        <span class="fragment" data-fragment-index="0">
+        <script type="text/tikz">
+            \begin{document}
+            \begin{tikzpicture}[domain=0:4, very thick]
+                \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+                \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+                \draw[color=cyan, domain=0.25:3.96] plot (\x,{1/\x}) node[right] {};
+                \draw[very thin,color=white!20] (0,0) grid (4.0,4.0);
+                \foreach \x in {0.25, 0.3, 0.4, 0.5, 1.0, 2.0, 3.0, 3.96}
+                {
+                    \filldraw[orange] (\x,{1/\x}) circle (2pt);
+                }
+            \end{tikzpicture}
+            \end{document}
+        </script>
+        </span>
+    </div>
+    <div id="right" style="width:50%;">
+        <center style="color:yellow" class="fragment" data-fragment-index="1">Concave Pareto Front</center>
+        <span class="fragment" data-fragment-index="1">
+        <script type="text/tikz">
+            \begin{document}
+            \begin{tikzpicture}[domain=0:4, very thick]
+            \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+            \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+            \draw[color=cyan, domain=0.3:3.96] plot (\x,{sqrt(16 - \x^2)}) node[right] {};
+            \node[white] at (4,-0.3) {$1.0$};
+            \node[white] at (-0.4,4.0) {$1.0$};
+            \draw[very thin,color=white!20] (0,0) grid (4.0,4.0);
+            \filldraw[orange] (0.3,{sqrt(16-0.3*0.3)}) circle (2pt);
+            \filldraw[orange] (3.96,{sqrt(16-3.96*3.96)}) circle (2pt);
+            \end{tikzpicture}
+            \end{document}
+        </script>
+        </span>
+    </div>
+    <div id="left" style="width:100%;">
+        <br>
+        <center style="color:orange;" class="fragment" data-fragment-index="2">Works well for convex pareto-fronts, but fails otherwise.</center>
+    </div>
+</section>
+</section>
+
+<section>
+    <section data-background="#511EA8">
+        <h2>What is this tutorial about?</h2>
+    </section>
+
+    <section>
+        <h2>Going beyond scalarization</h2>
+        <div id="left" style="width:33%">
+            <figure>
+                <img src="/assets/images/talks/MTL/mgda/mgda.gif" alt="" width="100%">
+                <figurecaption>Adaptive Methods</figurecaption>
+            </figure>
+        </div>
+        <div id="left" style="width:33%">
+            <figure>
+                <img src="/assets/images/talks/MTL/pareto-mtl/pareto_mtl.gif" alt="" width="100%">
+                <figurecaption>Pareto MTL</figurecaption>
+            </figure>
+        </div>
+        <div id="left" style="width:33%">
+            <figure>
+                <img src="/assets/images/talks/MTL/pareto-set/pareto_set_learning.gif" alt="" width="100%">
+                <figurecaption>Pareto Set Learning</figurecaption>
+            </figure>
+        </div>
+    </section>
+
+    <section data-background="white">
+        <h2 style="color:black;">Foundational Concepts</h2>
+        <div id="left" style="width:50%;">
+            <center style="color:black">Non-Dominated Sorting Genetic Algorithm</center>
+            <br><br>
+            <figure><img src="/assets/images/talks/introduction/nsga-ii.jpeg" alt="" width="80%"></figure>
+        </div>
+        <div id="right" style="width:50%;">
+            <center style="color:black">MOEA/D: Multi-Objective Evolutionary Algorithm Based on Decomposition</center>
+            <figure><img src="/assets/images/talks/introduction/moead.svg" alt="" width="80%"></figure>
+        </div>
+        <div id="left" style="width:100%;">
+            <center style="color:black;">... and more.</center>
+        </div>
+    </section>
+
+    <section>
+        <h2>A Few Applications</h2>
+        <div id="left" style="width:50%">
+            <center>Multi-Task Learning</center>
+            <figure><img src="/assets/images/talks/MTL/mtl-1.svg" alt="" width="100%"></figure>
+        </div>
+        <div id="left" style="width:50%">
+            <center>Designing CNNs for Secure Inference</center>
+            <figure><img src="/assets/images/talks/autofhe/overview.svg" alt="" width="80%"></figure>
+        </div>
+        <div id="left" style="width:100%">
+            <center>Neural Architecture Search</center>
+            <figure><img src="/assets/images/talks/introduction/nas.svg" alt="" width="80%"></figure>
+        </div>
+    </section>
+
+    <section>
+        <h2>Hands-On Demo</h2>
+        <figure><img src="/assets/images/talks/introduction/pymoo.jpeg" alt="" width="100%"></figure>
+    </section>
+</section>
+
             </div>
         </div>
         <script src="../../assets/revealjs/dist/reveal.js"></script>
@@ -219,7 +502,7 @@
 
         <script>
           Reveal.initialize({
-              controls: false,
+              controls: true,
               progress: true,
               history: true,
               center: true,

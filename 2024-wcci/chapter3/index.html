@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Multi-Objective Optimization for Multi-Task Learning</title>
+        <meta name="author" content="Xi Lin">
+
+        <link rel="stylesheet" href="../../assets/revealjs/dist/reset.css">
+        <link rel="stylesheet" href="../../assets/revealjs/dist/reveal.css">
+        <link rel="stylesheet" href="../../assets/revealjs/dist/theme/vishnu.css" id="theme">
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/highlight/monokai.css" id="highlight-theme">
+
+        <!-- tikzjax -->
+        <link rel="stylesheet" type="text/css" href="../../assets/tikzjax/fonts.css">
+        <script src="../../assets/tikzjax/tikzjax.js"></script>
+
+        <!-- CDN for plotly and fontawesome -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://kit.fontawesome.com/7a9386c7a8.js" crossorigin="anonymous"></script>
+
+        <!-- Theme used for syntax highlighted code -->
+        <style>
+            .reveal code,
+            .reveal .formula-source,
+            .reveal a {
+                color: #3F988E;
+            }
+            .reveal code {
+                padding: 0 0.25em;
+            }
+            .reveal pre.formula-source {
+                box-shadow: none;
+                font-size: 0.8em;
+            }
+            .reveal .formula,
+            .reveal .formula-source {
+                margin: 2.5rem 0;
+            }
+            .reveal li {
+                margin: 0.65em 0;
+            }
+            .reveal .formula.bigger {
+                font-size: 1.8em;
+            }
+
+            /*https://medium.com/@mandieq/beautiful-presentations-from-markdown-who-knew-it-could-be-so-easy-d279aa7f787a*/
+
+            #left {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                float: left;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #right {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                float: right;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #center {
+                margin-left: auto;
+                margin-right: auto;
+                float: center;
+                text-align: center;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #alert {
+                background-color: #ff9800;
+                padding: 10px;
+            }
+
+            #customers {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            #customers td, #customers th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            /*#customers tr:nth-child(even){background-color: #f2f2f2;}*/
+            #customers tr:hover {background-color: #000000;}
+            #customers th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              background-color: #4CAF50;
+              color: white;
+            }
+
+            #mytable {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            #mytable td, #mytable th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            /*#mytable tr:nth-child(even){background-color: #f2f2f2;}*/
+            #mytable tr:hover {background-color: #000000;}
+            #mytable th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              color: white;
+            }
+
+            .box {
+              width: 100%;
+              background-color: #333333;
+              border: 2px solid #ccc;
+              border-radius: 5px;
+              padding: 0px;
+              margin: 0px;
+              color:#eeeeec;
+            }
+          
+            .box-header {
+              background-color: #337ab7;
+              color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+
+            .red-box-header {
+              background-color: indianred;
+              color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+
+            .green-box-header {
+              background-color: #BAB86C;
+              color: black;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+
+                <!-- Color ramp: ["#559EB1", "#6DB28B", "#8CBB68", "#AFBD4F", "#CFB541", "#E39B39", "#E56E30"] -->
+
+<section data-background-iframe="../../../assets/viz/gradient/">
+    <p class="title">Multi-Objective Optimization for Multi-Task Learning</p>
+    <br>
+    <p class="subtitle"> CVPR Tutorial </p>
+    <p class="author"> Xi Lin </p>
+    <p class="date">June 19, 2023</p>
+</section>
+
+<section>
+    <h2>Outline</h2>
+    <br>
+    <ul>
+        <li>Finding a Single Pareto Solution</li>
+        <br>
+        <li>Finding a Set of Pareto Solutions</li>
+        <br>
+        <li>Building a Model for the Whole Pareto Set</li>
+        <br>
+        <li>Rethinking MOO for MTL and Future Directions</li>
+    </ul>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>Finding a Single Pareto Solution</h2>
+</section>
+
+<section>
+    <h2>Multi-Task Learning (MTL)</h2>
+    <figure><img src="/assets/images/talks/MTL/mtl-1.svg" alt="" width="75%"></figure>
+    <ul>
+        <ul>
+            <li><b>MTL:</b> Solve multiple related tasks at the same time</li>
+            <center>
+                <div class="box" style="width:50%">
+                    <div class="box-header">MTL Loss</div>
+                    <div class="box-content">
+                        \[\min_{\theta} \mathcal{L}(\theta) = \sum_{i} w_i\mathcal{L}_i(\theta)\]
+                    </div>
+                </div>
+            </center>
+        </ul>
+    </ul>
+</section>
+
+<section>
+    <h2>Drawbacks of MTL Loss</h2>
+    <center>
+        <div class="box" style="width:50%">
+            <div class="box-header">MTL Loss</div>
+            <div class="box-content">
+                <div class="r-stack">
+                    <span class="fragment current-visible" data-fragment-index="0">\[\min_{\theta} \mathcal{L}(\theta) = \sum w_i\mathcal{L}_i(\theta)\]</span>
+                    <span class="fragment current-visible" data-fragment-index="1">\[\min_{\theta} \mathcal{L}(\theta) = \sum {\color{yellow}{w_i}}\mathcal{L}_i(\theta)\]</span>
+                    <span class="fragment current-visible" data-fragment-index="2">\[\min_{\theta} \mathcal{L}(\theta) = \sum w_i\color{cyan}{\mathcal{L}_i(\theta)}\]</span>
+                    <span class="fragment current-visible" data-fragment-index="3">\[\min_{\theta} \mathcal{L}(\theta) = \color{orange}{\sum} w_i\mathcal{L}_i(\theta)\]</span>
+                </div>
+            </div>
+        </div>
+    </center>
+    <div id="left" style="width:60%">
+    <ul style="font-size:75%;">
+        <li style="color:yellow" class="fragment" data-fragment-index="1">Weights:</li>
+        <ul style="color:yellow" class="fragment" data-fragment-index="1">
+            <li>Manually chosen by practitioners</li>
+            <li>Exhaustive search might be needed</li>
+        </ul>
+        <li style="color:cyan" class="fragment" data-fragment-index="2">Tasks:</li>
+        <ul style="color:cyan" class="fragment" data-fragment-index="2">
+            <li>Might be conflicted with each other</li>
+            <li>No single best solution</li>
+        </ul>
+        <li style="color:orange" class="fragment" data-fragment-index="3">Simple Weighted-Sum:</li>
+        <ul style="color:orange" class="fragment" data-fragment-index="3"><li>Can't find any solution on concave Pareto front</li></ul>
+    </ul>
+    </div>
+    <div id="right" style="width:40%">
+        <br>
+        <div class="r-stack">
+            <div class="fragment" data-fragment-index="2">
+                <img src="/assets/images/talks/MTL/trade-off.png" alt="" width="100%">
+            </div>
+            <div class="fragment" data-fragment-index="3">
+                <img src="/assets/images/talks/MTL/linear_scalarization.gif" alt="" width="100%">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">View Point of Multi-Objective Optimization</h2>
+    <span style="font-size:75%;">$$\min_{\theta} \mathcal{L}(\theta) = (\mathcal{L}_1(\theta),\mathcal{L}_2(\theta),\dots,\mathcal{L}_m(\theta))$$</span>
+    <ul style="font-size:75%;">
+        <ul>
+            <li><span style="color:yellowgreen">Goal:</span> Find a Pareto optimal solution for MTL with gradient-based method</li>
+            <li><span style="color:yellowgreen">Motivation:</span> Karush-Kuhn-Tucker (KKT)Condition$^{[1,2]}$</li>
+        </ul>
+    </ul>
+    <center>
+    <div class="box" style="width:90%;">
+        <div class="box-content" style="font-size:75%;">
+            There exist $\alpha_1, \dots, \alpha_m \geq 0$ such that $\sum_{i=1}^m \alpha_i = 1$ and $\sum_{i=1}^m \alpha_i \nabla \mathcal{L}_i(\theta) = 0$
+        </div>
+    </div>
+    </center>
+    <div id="left" style="width:60%;">
+        <br>
+        <ul style="font-size:75%;"><ul><li>Any $\theta$ that satisfies this condition is called a Pareto stationary solution.</li></ul></ul>
+        <br>
+        <hr>
+        <ul style="font-size:50%;line-height:50%">
+            <li>Sener and Koltun, Multi-Task Learning as Multi-Objective Optimization, NeurIPS 2018.</li>
+            <li>$^1$Fliege and Svaiter, Steepest descent methods for multicriteria optimization, Mathematical Methods of Operations Research 2000.</li>
+            <li>$^2$Schäffler et. al., Stochastic method for the solution of unconstrained vector optimization problems. Journal of Optimization Theory and Applications 2002.
+            </li>
+        </ul>
+    </div>
+    <div id="right" style="width:40%;">
+        <br>
+        <script type="text/tikz">
+            \begin{document}
+            \begin{tikzpicture}[domain=0:4, very thick]
+                \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+                \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+                \draw[color=white, domain=0.25:3.96] plot (\x,{1/\x}) node[right] {};
+                \draw[very thin,color=white!20] (0,0) grid (4.0,4.0);
+                \filldraw[orange] (1.0,1.0) circle (2pt);
+                \draw[->, orange] (1.0,1.0) -- (1.5,0.5);
+                \draw[->, orange] (1.0,1.0) -- (0.5,1.5);
+            \end{tikzpicture}
+            \end{document}
+        </script>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Multi-Gradient Descent Algorithm (MGDA)</h2>
+    <span style="font-size:75%;">$$\min_{\theta} \mathcal{L}(\theta) = (\mathcal{L}_1(\theta),\mathcal{L}_2(\theta),\dots,\mathcal{L}_m(\theta))$$</span>
+    <ul style="font-size:75%;">
+        <ul>
+            <li><span style="color:yellowgreen">Goal:</span> Find a Pareto optimal solution for MTL with gradient-based method</li>
+            <li><span style="color:yellowgreen">Method:</span> Multi-Gradient Descent Algorithm (MGDA)$^{1}$</li>
+        </ul>
+    </ul>
+    <center>
+    <div class="box" style="width:50%;">
+        <div class="box-content" style="font-size:50%;">
+            $$
+                \begin{equation}
+                    \min_{\alpha_1,\dots,\alpha_m} \left\{\left\|\sum_{i=1}^m \alpha_i\nabla_{\theta}\mathcal{L}_i(\theta)\right\|_2^2 \Bigg\rvert \sum_{i=1}^m \alpha_i=1, \alpha_i\geq 0 \text{ } \forall i\right\} \nonumber
+                \end{equation}
+            $$
+        </div>
+    </div>
+    </center>
+
+    <div class="r-stack">
+    <span class="fragment current-visible" data-fragment-index="0">
+    <div id="left" style="width:70%;">
+        <br>
+        <div id="left" style="width:55%">
+            <ul><li><span style="color:orange;font-size:150%">A: </span> <span style="font-size:75%;">$\underbrace{\left\|\sum_{i=1}^m \alpha_i\nabla_{\theta}\mathcal{L}_i(\theta)\right\|_2^2}_{\text{Pareto Stationary Solution}} = 0$</span></li></ul>
+        </div>
+        <div id="right" style="width:45%">
+            <ul><li><span style="color:cyan;font-size:150%">B: </span><span style="font-size:75%;">$\underbrace{d = \sum_{i=1}^m\alpha_i\nabla_{\theta}\mathcal{L}_i(\theta)}_{\text{Valid Gradient Direction}}$</span></li></ul>
+        </div>
+    </div>
+    <div id="right" style="width:30%;">
+        <script type="text/tikz">
+            \begin{document}
+            \begin{tikzpicture}[domain=0:4, very thick]
+                \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+                \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+                \draw[color=white, domain=0.25:3.96] plot (\x,{1/\x}) node[right] {};
+                \draw[very thin,color=white!20] (0,0) grid (4.0,4.0);
+                \filldraw[orange] (1.0,1.0) circle (2pt);
+                \draw[->, orange] (1.0,1.0) -- (1.5,0.5);
+                \draw[->, orange] (1.0,1.0) -- (0.5,1.5);
+                \filldraw[cyan] (2.0,2.0) circle (2pt);
+                \draw[->, cyan, dashed] (2.0,2.0) -- (1.5,1.5);
+                \draw[->, white] (2.0,2.0) -- (1.3,1.9);
+                \draw[->, white] (2.0,2.0) -- (1.9,1.3);
+            \end{tikzpicture}
+            \end{document}
+        </script>
+    </div>
+    </span>
+    <span class="fragment current-visible" data-fragment-index="1">
+    <div id="left" style="width:100%;">
+        <ul style="font-size:75%;"><li><span style="color:yellowgreen;">Optimization:</span> Frank-Wolfe algorithm$^2$ to obtain $d=\sum_{i=1}^m\alpha_i\nabla_{\theta}\mathcal{L}_i(\theta)$</li></ul>
+    </div>
+    <script type="text/tikz">
+        \begin{document}
+        \begin{tikzpicture}[domain=0:4, very thick]
+            \draw[->, cyan] (0,0) -- (0,2) {};
+            \draw[->, white] (0,0) -- (-1,2) {};
+            \draw[->, orange] (0,0) -- (-2,2) {};
+            \draw[-, dashed, gray] (-2,2) -- (0,2);
+            \node at (-1.5,-0.5) {\color{white}$\gamma=0$};
+            \node at (-1,2.5) {${\color{orange}\theta}^{\color{white}T}{\color{white}\bar{\theta} \geq \bar{\theta}^T\bar{\theta} }$};
+
+            \draw[->, yellow] (4,0) -- (4,2) {};
+            \draw[->, white] (4,0) -- (5,2) {};
+            \draw[->, orange] (4,0) -- (2,2) {};
+            \draw[-, dashed, gray] (2,2) -- (5,2);
+            \node at (4,-0.5) {\color{white}$\gamma=\frac{({\color{white}\bar{\theta}} - {\color{orange}\theta})^T{\color{white}\bar{\theta}}}{\|{\color{white}\bar{\theta}} - {\color{orange}\theta}\|_2^2}$};
+            \node at (3.25,2.5) {${\color{orange}\theta}^{\color{white}T}{\color{white}\bar{\theta} \leq \bar{\theta}^T\bar{\theta} }$ {\color{white}and} ${\color{orange}\theta}^{\color{white}T}{\color{white}\bar{\theta} \leq \theta^T\theta }$};
+
+            \draw[->, cyan] (6,0) -- (6,2) {};
+            \draw[->, white] (6,0) -- (8,2) {};
+            \draw[->, orange] (6,0) -- (7,2) {};
+            \draw[-, dashed, gray] (6,2) -- (8,2);
+            \node at (7,-0.5) {\color{white}$\gamma=1$};
+            \node at (7,2.5) {${\color{orange}\theta}^{\color{white}T}{\color{white}\bar{\theta} \geq \theta^T\theta }$};
+
+            \draw[-, dotted, gray] (1,2.5) -- (1,-1);
+            \draw[-, dotted, gray] (5.5,2.5) -- (5.5,-1);
+        \end{tikzpicture}
+        \end{document}
+    </script>
+    </span>
+    </div>
+    <div id="left" style="width:100%">
+        <hr>
+        <ul style="font-size:50%;line-height:50%">
+            <li>Sener and Koltun, Multi-Task Learning as Multi-Objective Optimization, NeurIPS 2018.</li>
+            <li>$^1$Jean-Antoine Désidéri, Multiple-gradient descent algorithm (MGDA) for multiobjective optimization, Comptes Rendus Mathematique 2012.</li>
+            <li class="fragment" data-fragment-index="1">$^2$Martin Jaggi, Revisiting Frank-Wolfe: Projection-Free Sparse Convex Optimization, ICML 2013.</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Linear Scalarization vs MGDA</h2>
+    <div id="left" style="width:50%;">
+        <figure><img src="/assets/images/talks/MTL/linear_scalarization.gif" alt="" width="90%"></figure>
+        <figurecaption>Linear Scalarization</figurecaption>
+    </div>
+    <div id="right" style="width:50%;">
+        <figure><img src="/assets/images/talks/MTL/mgda/mgda.gif" alt="" width="90%"></figure>
+        <figurecaption>MGDA</figurecaption>
+    </div>
+    <br><hr>
+    <ul style="font-size:50%;line-height:50%">
+        <li>Sener and Koltun, Multi-Task Learning as Multi-Objective Optimization, NeurIPS 2018.</li>
+        <li>Jean-Antoine Désidéri, Multiple-gradient descent algorithm (MGDA) for multiobjective optimization, Comptes Rendus Mathematique 2012.</li>
+        <li>Martin Jaggi, Revisiting Frank-Wolfe: Projection-Free Sparse Convex Optimization, ICML 2013.</li>
+    </ul>
+</section>
+
+<section data-background="white"> 
+    <h2 class="r-fit-text" style="color:black;">Promising Performance of Pareto Solution for MTL</h2>
+    <figure><img src="/assets/images/talks/MTL/mtl-mnist-result-1.png" alt="" width="75%"></figure>
+    <div id="left" style="width:50%">
+        <br>
+        <figure><img src="/assets/images/talks/MTL/mtl-mnist-result-3.png" alt="" width="90%"></figure>
+        <ul><li style="color:red">MultiMNIST: MTL version of MNIST Classification</li></ul>
+    </div>
+    <div id="right" style="width:50%">
+        <figure><img src="/assets/images/talks/MTL/mtl-mnist-result-2.png" alt="" width="80%"></figure>
+    </div>
+    <div id="left" style="width:100%;">
+    <hr>
+    <ul style="font-size:50%;line-height:50%;color:black">
+        <li>Sener and Koltun, Multi-Task Learning as Multi-Objective Optimization, NeurIPS 2018.</li>
+        <li>Sabour, Frosst, and Hinton, Dynamic Routing Between Capsules, NeurIPS 2017.</li>
+    </ul>
+    </div>
+</section>
+
+<section data-background="white"> 
+    <h2 class="r-fit-text" style="color:black;">Promising Performance of Pareto Solution for MTL</h2>
+    <figure><img src="/assets/images/talks/MTL/mtl-cityscapes-result-1.png" alt="" width="100%"></figure>
+    <div id="left" style="width:50%">
+        <ul style="color:black;">
+            <li>Cityscapes Scene Understanding:</li>
+            <ul>
+                <li>Semantic Segmentation</li>
+                <li>Instance Segmentation</li>
+                <li>Depth Estimation</li>
+            </ul>
+        </ul>
+    </div>
+    <div id="right" style="width:50%">
+        <br>
+        <figure><img src="/assets/images/talks/MTL/mtl-cityscapes-result-2.png" alt="" width="90%"></figure>
+    </div>
+    <div id="left" style="width:100%;">
+    <hr>
+    <ul style="font-size:50%;line-height:50%;color:black">
+        <li>Sener and Koltun, Multi-Task Learning as Multi-Objective Optimization, NeurIPS 2018.</li>
+        <li>Cordts et. al., The Cityscapes Dataset for Semantic Urban Scene Understanding, CVPR 2016.</li>
+    </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Different Ways to Find the Gradient</h2>
+    <ul><ul style="font-size:75%;">
+        <li class="fragment" data-fragment-index="0"><span style="color:yellowgreen">PCGrad: </span>Gradient Surgery for Multi-Task Learning, NeurIPS 2020.</li>
+        <li class="fragment" data-fragment-index="1"><span style="color:yellowgreen">CAGrad: </span>Conflict-Averse Gradient Descent for Multi-task Learning, NeurIPS 2021.</li>
+        <li class="fragment" data-fragment-index="2"><span style="color:yellowgreen">I-MTL: </span>Towards Impartial Multi-Task Learning, ICLR 2020.</li>
+        <li class="fragment" data-fragment-index="2"><span style="color:yellowgreen">RotoGrad: </span>Gradient Homogenization in Multitask Learning, ICLR 2022.</li>
+        <li class="fragment" data-fragment-index="2"><span style="color:yellowgreen">Nash-MTL: </span>Multi-Task Learning as a Bargaining Game, ICML 2022.</li>
+        <li class="fragment" data-fragment-index="2"><span style="color:yellowgreen">MoCo: </span>Mitigating Gradient Bias in Multi-Objective Learning, ICLR 2023.</li>
+    </ul></ul>
+    <div class="r-stack">
+        <span class="fragment current-visible" data-fragment-index="0">
+            <img src="/assets/images/talks/MTL/mgda/img_a.svg" alt="" style="width:auto">
+            <img src="/assets/images/talks/MTL/mgda/img_b.svg" alt="" style="width:auto">
+            <img src="/assets/images/talks/MTL/mgda/img_c.svg" alt="" style="width:auto">
+            <img src="/assets/images/talks/MTL/mgda/img_d.svg" alt="" style="width:auto">
+        </span>
+        <span class="fragment current-visible" data-fragment-index="1">
+            <img src="/assets/images/talks/MTL/mgda/img_e.svg" alt="" style="width:auto">
+            <img src="/assets/images/talks/MTL/mgda/img_f.svg" alt="" style="width:auto">
+            <img src="/assets/images/talks/MTL/mgda/img_g.svg" alt="" style="width:auto">
+        </span>
+        <ul style="font-size:65%;" class="fragment current-visible" data-fragment-index="3">
+            <li>Related Work on Weight Adjustment:</li>
+            <ul>
+                <li><span style="color:yellowgreen">Uncertainty: </span>MTL Using Uncertainty to Weigh Losses for Scene Geometry and Semantics, CVPR 2018.</li>
+                <li><span style="color:yellowgreen">GradNorm: </span>Gradient Normalization for Adaptive Loss Balancing, ICML 2018.</li>
+                <li><span style="color:yellowgreen">DWA: </span>End-to-End Multi-Task Learning with Attention, CVPR 2019.</li>
+                <li><span style="color:yellowgreen">Just Pick a Sign: </span>Optimizing Deep Multitask Models with Gradient Sign Dropout, NeurIPS 2020.</li>
+            </ul>
+        </ul>
+    </div>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>Finding a Set of Pareto Solutions</h2>
+</section>
+
+<section>
+    <h2>There are Many Pareto Solutions</h2>
+    <div id="left" style="width:33%">
+        <figure class="fragment" data-fragment-index="0">
+            <img src="/assets/images/talks/MTL/linear_scalarization.gif" alt="" width="100%">
+            <figurecaption>Linear Scalarization</figurecaption>
+        </figure>
+    </div>
+    <div id="left" style="width:33%">
+        <figure class="fragment" data-fragment-index="1">
+            <img src="/assets/images/talks/MTL/mgda/mgda.gif" alt="" width="100%">
+            <figurecaption>Adaptive Methods</figurecaption>
+        </figure>
+    </div>
+    <div id="left" style="width:33%">
+        <figure class="fragment" data-fragment-index="2">
+            <img src="/assets/images/talks/MTL/pareto-mtl/pareto_mtl.gif" alt="" width="100%">
+            <figurecaption>Pareto MTL</figurecaption>
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul><ul>
+            <li><span style="color:yellowgreen">Pareto Solutions</span> represent different trade-offs among tasks</li>
+            <li class="fragment" data-fragment-index="0"><span style="color:yellowgreen">Fixed Linear Scalarization</span> can't find the concave Pareto front.</li>
+            <li class="fragment" data-fragment-index="1"><span style="color:yellowgreen">Adaptive Methods</span> can find a single solution.</li>
+            <li class="fragment" data-fragment-index="2"><span style="color:yellowgreen">Pareto MTL</span> can find a set of diverse Pareto solutions.</li>
+        </ul></ul>
+        <hr>
+        <ul style="font-size:50%;"><li>Lin et. al., Pareto Multi-Task Learning, NeurIPS 2019</li></ul>
+    </div>
+</section>
+
+<section>
+    <h2>Pareto Multi-Task Learning</h2>
+    <ul style="font-size:75%"><li><span style="color:yellowgreen;">Goal:</span> Find:</li></ul>
+    <div id="left" style="width:50%;">
+        <ul style="font-size:75%"><ul><li><s>a Pareto optimal solution</s></li></ul></ul>
+    </div>
+    <div id="right" style="width:50%;">
+        <ul style="font-size:75%"><ul><li style="color:orange">set of diverse Pareto solutions</li></ul></ul>
+    </div>
+    <div id="left" style="width:75%">
+        <ul><li class="fragment" data-fragment-index="0"><span style="color:yellowgreen;">Method:</span></li></ul>
+        <div class="r-stack">
+            <div class="fragment current-visible" data-fragment-index="0">
+                <div class="box" style="width:100%;font-size:65%">
+                    <div class="box-header">Decompose MTL into multiple subproblems</div>
+                    <div class="box-content">
+                        $$
+                            \begin{equation}
+                            \begin{aligned}
+                                \min_{\theta} \quad & \left(\mathcal{L}_1(\theta),\mathcal{L}_2(\theta),\dots,\mathcal{L}_m(\theta)\right) \\
+                                \text{s.t.} \quad & \mathbf{\mathcal{L}(\theta)} \in \Omega_k = \{\mathbf{v} \in \mathbb{R}^{m}_+ | \mathbf{u}^T_j\mathbf{v} \leq \mathbf{u}^T_k\mathbf{v}, \forall j \in \{1, \dots, K\}\} \nonumber
+                            \end{aligned}
+                            \end{equation}
+                        $$
+                        <center><span style="color:orange">Idea borrowed from MOEA/D and MOEA/D-M2M</span></center>
+                    </div>
+                </div>
+            </div>
+            <div class="fragment" data-fragment-index="1">
+                <div class="box" style="width:100%;font-size:65%">
+                    <div class="box-header">Decompose MTL into multiple subproblems</div>
+                    <div class="box-content">
+                        $$
+                            \begin{equation}
+                            \begin{aligned}
+                                \min_{\theta} \quad & \left(\mathcal{L}_1(\theta),\mathcal{L}_2(\theta),\dots,\mathcal{L}_m(\theta)\right) \\
+                                \text{s.t.} \quad & \mathbf{\mathcal{L}(\theta)} \in \Omega_k = \{\mathbf{v} \in \mathbb{R}^{m}_+ | \mathbf{u}^T_j\mathbf{v} \leq \mathbf{u}^T_k\mathbf{v}, \forall j \in \{1, \dots, K\}\} \nonumber
+                            \end{aligned}
+                            \end{equation}
+                        $$
+                        <center><span style="color:orange">Rewrite constraint: </span>$\mathbf{G}_j(\theta_t)=(\mathbf{u}_j-\mathbf{u}_k)^T\mathbf{\mathcal{L}(\theta_t)} \leq 0, \forall j \in \{1, \dots, K\}$</center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="right" style="width:25%">
+        <div class="r-stack">
+        <div class="fragment current-visible" data-fragment-index="0">
+        <script type="text/tikz">
+            \begin{document}
+                \begin{tikzpicture}[domain=0:4, very thick]
+                    \filldraw[green!20] (0,0) -- (0,4) -- (2,4) -- cycle; 
+                    \filldraw[blue!20] (0,0) -- (2,4) -- (4,2) -- cycle; 
+                    \filldraw[red!20] (0,0) -- (4,2) -- (4,0) -- cycle; 
+                    \draw[black, dashed] (0,0) -- (2,4);
+                    \draw[black, dashed] (0,0) -- (4,2);
+
+                    \draw[black] (0,0) -- (1.1,4.4) node[right, near end] {$\mathbf{u}_1$};
+                    \draw[black] (0,0) -- (3.2,3.2) node[above left, near end] {$\mathbf{u}_2$};
+                    \draw[black] (0,0) -- (4.4,1.1) node[above, near end] {$\mathbf{u}_3$};
+
+                    \node[white] at (2, -0.5) {$\leftarrow$ Task 1 Error};
+                    \node[white, rotate=90] at (-0.5, 2) {$\leftarrow$ Task 2 Error};
+
+                    \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+                    \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+                    \draw[color=black, domain=0.25:3.96] plot (\x,{1/\x}) node[right] {};
+                \end{tikzpicture}
+            \end{document}
+        </script>
+        </div>
+        <div class="fragment current-visible" data-fragment-index="1">
+            <script type="text/tikz">
+                \begin{document}
+                    \begin{tikzpicture}[domain=0:4, very thick]
+                        \filldraw[green!20] (0,0) -- (0,4) -- (2,4) -- cycle; 
+                        \filldraw[blue!20] (0,0) -- (2,4) -- (4,2) -- cycle; 
+                        \filldraw[red!20] (0,0) -- (4,2) -- (4,0) -- cycle; 
+                        \draw[black, dashed] (0,0) -- (2,4);
+                        \draw[black, dashed] (0,0) -- (4,2);
+    
+                        \node[white] at (2, -0.5) {$\leftarrow$ Task 1 Error};
+                        \node[white, rotate=90] at (-0.5, 2) {$\leftarrow$ Task 2 Error};
+
+                        \draw[->, red, dashed] (2.5,2.5) -- (2.0,2.0);
+                        \draw[->] (2.5,2.5) -- (1.8,2.4);
+                        \draw[->] (2.5,2.5) -- (2.4,1.8);
+                        \filldraw[black] (2.5,2.5) circle (2pt);
+
+                        \draw[->, red, dashed] (1.3,3.5) -- (0.8,3.0);
+                        \draw[->] (1.3,3.5) -- (0.6,3.4);
+                        \draw[->] (1.3,3.5) -- (1.2,2.8);
+                        \filldraw[black] (1.3,3.5) circle (2pt);
+
+                        \draw[->, red, dashed] (3.5,1.2) -- (3.0,0.7);
+                        \draw[->] (3.5,1.2) -- (2.8,1.1);
+                        \draw[->] (3.5,1.2) -- (3.4,0.5);
+                        \filldraw[black] (3.5,1.2) circle (2pt);
+    
+                        \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+                        \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+                        \draw[color=black, domain=0.25:3.96] plot (\x,{1/\x}) node[right] {};
+                    \end{tikzpicture}
+                \end{document}
+            </script>
+            </div>
+            <div class="fragment current-visible" data-fragment-index="2">
+                <script type="text/tikz">
+                    \begin{document}
+                        \begin{tikzpicture}[domain=0:4, very thick]
+                            \filldraw[green!20] (0,0) -- (0,4) -- (2,4) -- cycle; 
+                            \filldraw[blue!20] (0,0) -- (2,4) -- (4,2) -- cycle; 
+                            \filldraw[red!20] (0,0) -- (4,2) -- (4,0) -- cycle; 
+                            \draw[black, dashed] (0,0) -- (2,4);
+                            \draw[black, dashed] (0,0) -- (4,2);
+        
+                            \node[white] at (2, -0.5) {$\leftarrow$ Task 1 Error};
+                            \node[white, rotate=90] at (-0.5, 2) {$\leftarrow$ Task 2 Error};
+
+                            \filldraw[black] (2.5,2.5) circle (2pt);
+                            \draw[->, red, dashed] (2.5,2.5) -- (2.2,2.2);
+                            \draw[->, red, dashed] (2.2,2.2) -- (2.0,1.8);
+                            \draw[->, red, dashed] (2.0,1.8) -- (1.4,1.4);
+                            \draw[->, red, dashed] (1.4,1.4) -- (1.0,1.0);
+                            
+                            \filldraw[black] (1.3,3.5) circle (2pt);
+                            \draw[->, red, dashed] (1.3,3.5) -- (1.0,3.2);
+                            \draw[->, red, dashed] (1.0,3.2) -- (0.7,2.8);
+                            \draw[->, red, dashed] (0.7,2.8) -- (0.5,2);
+
+                            \filldraw[black] (3.5,1.2) circle (2pt);
+                            \draw[->, red, dashed] (3.5,1.2) -- (3.2,0.9);
+                            \draw[->, red, dashed] (3.2,0.9) -- (3.0,0.6);
+                            \draw[->, red, dashed] (3.0,0.6) -- (2.5,0.4);
+        
+                            \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+                            \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+                            \draw[color=black, domain=0.25:3.96] plot (\x,{1/\x}) node[right] {};
+                        \end{tikzpicture}
+                    \end{document}
+                </script>
+                </div>
+        </div>
+    </div>
+    <div id="left" style="width:100%;">
+        <br>
+        <div class="r-stack">
+            <div class="fragment current-visible" data-fragment-index="1">
+                <div class="box" style="width:100%;font-size:65%">
+                    <div class="box-header">KKT Condition for Restricted Pareto Stationary Solution</div>
+                    <div class="box-content">
+                        There exist $\alpha_i \geq 0, \beta_i \geq 0 \text{ } \forall i,j$ such that $\sum_{i}\alpha_i + \sum_{j}\beta_j = 1$ and $\sum_i \alpha_i \nabla \mathcal{L}_i(\theta) + \sum_j \beta_j\mathbf{\mathcal{G}_j}(\theta) = 0$
+                    </div>
+                </div>
+            </div>
+            <div class="fragment current-visible" data-fragment-index="2">
+                <div class="box" style="width:100%;font-size:65%">
+                    <div class="box-header">Find a gradient direction for each subproblem</div>
+                    <div class="box-content">
+                        $$
+                            \begin{equation}
+                                \min_{\alpha_i,\beta_j, \forall i,j} \left\{\left\|\sum_{i} \alpha_i\nabla_{\theta}\mathcal{L}_i(\theta)+\sum_{j} \beta_j\nabla_{\theta}\mathcal{G}_i(\theta)\right\|_2^2 \Bigg\rvert \sum_{i} \alpha_i + \sum_j \beta_j=1, \alpha_i\geq 0,\beta_j \geq 0 \text{ } \forall i,j\right\} \nonumber
+                            \end{equation}
+                        $$
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="left" style="width:100%;">
+        <hr>
+        <div class="r-stack">
+            <ul style="font-size:50%;line-height:50%">
+                <li class="fragment fade-in" data-fragment-index="0">Lin et. al., Pareto Multi-Task Learning, NeurIPS 2019.</li>
+                <li class="fragment current-visible" data-fragment-index="0">Zhang and Li, MOEA/D: A Multiobjective Evolutionary Algorithm Based on Decomposition, TEVC 2007.</li>
+                <li class="fragment current-visible" data-fragment-index="0">Liu et.al., Decomposition of a Multiobjective Optimization Problem Into a Number of Simple Multiobjective Subproblems, TEVC 2013.</li>
+                <li class="fragment fade-in" data-fragment-index="1">Fliege and Svaiter, Steepest descent methods for multicriteria optimization, Mathematical Methods of Operations Research 2000.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black">Diverse Pareto Sets for MTL Problems</h2>
+    <img src="/assets/images/talks/MTL/mtl-results-1.png" alt="" width="100%">
+    <hr>
+    <ul style="font-size:50%;line-height:50%;color:black">
+        <li>Sabour, Frosst, and Hinton, Dynamic Routing Between Capsules, NeurIPS 2017</li>
+        <li>Xiao et. al., Fashion-MNIST: a Novel Image Dataset for Benchmarking Machine Learning Algorithms, arXiv 2017</li>
+    </ul>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black" class="r-fit-text">Other Methods to Find Diverse Pareto Solutions</h2>
+    <ul><ul style="font-size:75%;color:black">
+        <li class="fragment" data-fragment-index="0">Exact Pareto Optimal (EPO) Search, ICML 2020.</li>
+        <li class="fragment" data-fragment-index="1">Weighted Chebyshev-MGDA (XWC-MGDA), NeurIPS 2021.</li>
+        <li class="fragment" data-fragment-index="2">Hypervolume (HV) Maximization, EMO 2023.</li>
+        <li class="fragment" data-fragment-index="3">Efficient Continuous Pareto Exploration, ICML 2020.</li>
+    </ul></ul>
+    <div class="r-stack">
+        <span class="fragment current-visible" data-fragment-index="0">
+            <img src="/assets/images/talks/MTL/pareto-mtl/related-work-1.png" alt="" style="width:60%" align="left">
+        </span>
+        <span class="fragment current-visible" data-fragment-index="1">
+            <img src="/assets/images/talks/MTL/pareto-mtl/related-work-2.png" alt="" style="width:100%" align="left">
+        </span>
+        <span class="fragment current-visible" data-fragment-index="2">
+            <img src="/assets/images/talks/MTL/pareto-mtl/related-work-3.png" alt="" style="width:60%">
+        </span>
+        <span class="fragment current-visible" data-fragment-index="3">
+            <img src="/assets/images/talks/MTL/pareto-mtl/related-work-4.png" alt="" style="width:60%">
+        </span>
+        <ul style="font-size:75%;color:black"><ul>
+            <li class="fragment fade-in" data-fragment-index="4">Tchebycheff Procedure for Multi-task Text Classification, ACL 2020.</li>
+            <li class="fragment fade-in" data-fragment-index="4">Multi-Objective Stein Variational Gradient Descent (MO-SVGD), NeurIPS 2021.</li>
+            <li class="fragment fade-in" data-fragment-index="4">The Stochastic Multi-Gradient Algorithm for MOO and its Application to Supervised Machine Learning, Annals of Operations Research 2021.</li>
+            <li class="fragment fade-in" data-fragment-index="4">Pareto Navigation Gradient Descent: a First-Order Algorithm for Optimization in Pareto Set, UAI 2022.</li>
+            <li class="fragment fade-in" data-fragment-index="4">Stochastic Multiple Target Sampling Gradient Descent, NeurIPS 2022.</li>
+        </ul></ul>
+    </div>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2 class="r-fit-text">Building a Model for the Whole Pareto Set</h2>
+</section>
+
+<!-- <section data-background="white">
+    <h2 style="color:black" class="r-fit-text">There could be Infinite Pareto Solutions</h2>
+    <figure><img src="/assets/images/talks/MTL/pareto-mtl/related-work-4.png" alt="" width="60%"></figure>
+    <ul><ul style="color:black;font-size:75%">
+        <li><b>Previous Methods:</b> A few Pareto solutions (+ local exploration)</li>
+        <li><b>High Computational/Memonry Cost:</b> Each solution is a deep neural network</li>
+        <li>Can not cover the whole Pareto front (with infinite solutions)</li>
+        <li>Do not support real-time adjustment</li>
+    </ul></ul>
+    <hr>
+    <ul style="font-size:50%;color:black"><li>Ma and Du et.al., Efficient Continuous Pareto Exploration in Multi-Task Learning, ICML 2020.</li></ul>
+</section> -->
+
+<section data-background="white">
+    <h2 style="color:black" class="r-fit-text">There could be Infinite Pareto Solutions</h2>
+    <div id="left" style="width:50%;">
+        <figure><img src="/assets/images/talks/MTL/pareto-set/3.png" alt="" width="90%"></figure>
+    </div>
+    <div id="right" style="width:50%;">
+        <figure><img src="/assets/images/talks/MTL/pareto-set/4.png" alt="" width="90%"></figure>
+    </div>
+    <ul><ul style="color:black;font-size:75%">
+        <li>A few solutions <b>cannot cover the whole Pareto front</b></li>
+        <li>Storing many solutions lead to <b>high computational/memory cost</b></li>
+    </ul></ul>
+    <hr>
+    <ul style="font-size:50%;color:black"><li>Ma and Du et.al., Efficient Continuous Pareto Exploration in Multi-Task Learning, ICML 2020.</li></ul>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black">Learning the Whole Pareto Set/Front</h2>
+    <ul style="color:black"><li><b>Goal:</b> Find a,</li>
+    <ul>
+        <li><s>Pareto optimal solution</s></li>
+        <li><s>set of diverse Pareto solutions</s></li>
+        <li style="color:red">model to approximate the whole Pareto set</li>
+    </ul>
+    </ul>
+    <hr>
+    <ul style="font-size:50%;line-height:50%;color:black">
+        <li>Navon and Shamsian et. al., Learning the Pareto Front with Hypernetwork, ICLR 2021.</li>
+        <li>Lin et. al., Controllable Pareto Multi-Task Learning, arXiv 2021.</li>
+    </ul>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black">Preference-Conditioned Pareto Set Model</h2>
+    <ul style="color:black"><li><b>Goal:</b> Build a model to approximate the whole Pareto set</li></ul>
+    <figure><img src="/assets/images/talks/MTL/pareto-set/overview.png" alt="" width="100%"></figure>
+    <ul>
+        <li style="color:black">By adjusting the <span style="color:blue">preferences</span>, decision-makers can explore any trade-off <span style="color:red">Pareto solutions</span> on the approximate Pareto set/front.</li>
+    </ul>
+    <hr>
+    <ul style="font-size:50%;line-height:50%;color:black">
+        <li>Navon and Shamsian et. al., Learning the Pareto Front with Hypernetwork, ICLR 2021.</li>
+        <li>Lin et. al., Controllable Pareto Multi-Task Learning, arXiv 2021.</li>
+    </ul>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black">HyperNetwork-based Pareto Set Model</h2>
+    <ul style="color:black;">
+        <li><b>Goal:</b> Build a model to approximate the whole Pareto set</li>
+        <li><b>Method:</b> Preference-conditioned Hypernetwork</li>
+    </ul>
+    <div id="left" style="width:50%;">
+        <figure><img src="/assets/images/talks/MTL/pareto-set/1.png" alt="" width="70%"></figure>
+        <figurecaption style="color:black;">Pareto HyperNetwork (PHN)$^1$</figurecaption>
+    </div>
+    <div id="right" style="width:50%;">
+        <br>
+        <figure><img src="/assets/images/talks/MTL/pareto-set/2.png" alt="" width="100%"></figure>
+        <figurecaption style="color:black">Controllable Pareto MTL$^2$</figurecaption>
+    </div>
+    <div id="left" style="width:100%;">
+        <hr>
+        <ul style="color:black;font-size:50%;line-height:50%">
+            <li>$^1$Navon and Shamsian et. al., Learning the Pareto Front with Hypernetwork, ICLR 2021.</li>
+            <li>$^2$Lin et. al., Controllable Pareto Multi-Task Learning, arXiv 2021.</li>
+            <li>Ha et. al., HyperNetworks, ICLR 2017.</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Learning the Whole Pareto Set</h2>
+    <div id="left" style="width:25%">
+        <figure>
+            <img src="/assets/images/talks/MTL/linear_scalarization.gif" alt="" width="100%">
+            <figurecaption>Linear Scalarization</figurecaption>
+        </figure>
+    </div>
+    <div id="left" style="width:25%">
+        <figure>
+            <img src="/assets/images/talks/MTL/mgda/mgda.gif" alt="" width="100%">
+            <figurecaption>Adaptive Methods</figurecaption>
+        </figure>
+    </div>
+    <div id="left" style="width:25%">
+        <figure>
+            <img src="/assets/images/talks/MTL/pareto-mtl/pareto_mtl.gif" alt="" width="100%">
+            <figurecaption>Pareto MTL</figurecaption>
+        </figure>
+    </div>
+    <div id="left" style="width:25%">
+        <figure>
+            <img src="/assets/images/talks/MTL/pareto-set/pareto_set_learning.gif" alt="" width="100%">
+            <figurecaption>Pareto Set Learning</figurecaption>
+        </figure>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black">Learned Pareto Sets for MTL Problems</h2>
+    <img src="/assets/images/talks/MTL/pareto-set/results.png" alt="" width="100%">
+    <hr>
+    <ul style="font-size:50%;color:black;line-height:50%"><li>Navon and Shamsian et. al., Learning the Pareto Front with Hypernetwork, ICLR 2021.</li></ul>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black">Other Methods for Learning the Pareto Front</h2>
+
+    <ul><ul style="color:black;font-size:75%">
+        <li class="fragment" data-fragment-index="0">COSMOS: Conditioned One-shot Multi-Objective Search, ICDM 2021.</li>
+        <li class="fragment" data-fragment-index="1">Controllable Dynamic Multi-Task Architectures, CVPR 2022.</li>
+    </ul></ul>
+
+    <div class="r-stack">
+        <figure class="fragment current-visible" data-fragment-index="0"><img src="/assets/images/talks/MTL/pareto-set/related-work-1.png" alt="" width="80%"></figure>
+        <figure class="fragment current-visible" data-fragment-index="1"><img src="/assets/images/talks/MTL/pareto-set/related-work-2.png" alt="" width="100%"></figure>
+        <ul style="color:black;font-size:75%" class="fragment current-visible" data-fragment-index="2">
+            <ul>
+                <li class="fragment" data-fragment-index="2">Learning a Neural Pareto Manifold Extractor with Constraints, UAI 2022.</li>
+                <li class="fragment" data-fragment-index="2">Multi-Objective Deep Learning with Adaptive Reference Vectors, NeurIPS 2022.</li>
+                <li class="fragment" data-fragment-index="2">Improving Pareto Front Learning via Multi-Sample Hypernetworks, AAAI 2023.</li>
+            </ul>
+        </ul>
+    </div>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2 class="r-fit-text">Rethinking MOO for MTL and Future Directions</h2>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black;">
+        <div class="r-stack">
+            <span class="fragment current-visible" data-fragment-index="0">Is Adaptive Weight Beneficial for Finding a Single Solution?</span>
+            <span class="fragment current-visible" data-fragment-index="1">Is MTL Truely Multi-Objective?</span>
+        </div>
+    </h2>
+    <ul style="color:black;font-size:95%" class="fragment" data-fragment-index="0"><li><span style="color:orange;">Simple linear scalarization</span> can achieve state-of-the-art performance$^{123}$</li></ul>
+    <figure class="fragment" data-fragment-index="0"><img src="/assets/images/talks/MTL/pareto-mtl-adaptive-1.png" alt="" width="80%"></figure>
+    <figurecaption class="fragment" data-fragment-index="0" style="font-size:75%;color:black">Average Accuracy on CelebA (40 Tasks)$^1$</figurecaption>
+    <ul style="color:black" class="fragment" data-fragment-index="1">
+        <ul style="font-size:75%;">
+            <li><b>The Gap:</b> Training Loss -> Training Performance -> Testing Performance</li>
+            <li>A sufficiently large enough model can learn all tasks simultaneously</li>
+        </ul>
+    </ul>
+    <hr>
+    <ul style="color:black;font-size:50%;line-height:50%" class="fragment" data-fragment-index="0">
+        <li>$^1$In Defense of the Unitary Scalarization for Deep MTL, NeurIPS 2022.</li>
+        <li>$^2$Do Current Multi-Task Optimization Methods in Deep Learning Even Help? NeurIPS 2022.</li>
+        <li>$^3$Reasonable Effectiveness of Random Weighting: A Litmus Test for MTL, TMLR 2022.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Future Directions</h2>
+    <ul style="font-size:75%;">
+        <li style="color:orange">Task Relations:</li>
+        <ul>
+            <li>Efficiently Identifying Task Groupings for Multi-Task Learning, NeurIPS 2022.</li>
+            <li>Auto-Lambda: Disentangling Dynamic Task Relationships, TMLR 2022.</li>
+        </ul>
+        <li style="color:yellowgreen;">Knowledge Transfer:</li>
+        <ul>
+            <li>Pareto Self-Supervised Training for Few-Shot Learning, CVPR 2021.</li>
+            <li>Pareto Domain Adaptation, NeurIPS 2021.</li>
+        </ul>
+        <li style="color:cyan">Truely Conflicted Objectives:</li>
+        <ul>
+            <li>Neural Architecture Search</li>
+            <li>Fairness v.s. Performance</li>
+            <li>Limited Capacity (e.g., on Edge Device)</li>
+        </ul>
+    </ul>
+</section>
+
+<!-- <section data-background="white">
+    <h2 class="r-fit-text" style="color:black;">Is Adaptive Weight Beneficial for Finding a Single Solution?</h2>
+    <ul style="color:black">
+        <li><span style="color:orange;">Simple linear scalarization</span> with <span style="color:violet">fixed carefully finetuned</span> or <span style="color:violet">uniformly sampled</span> weights can achieve state-of-the-art performances:</li>
+        <ul style="font-size:75%;">
+            <li>$^1$In Defense of the Unitary Scalarization for Deep MTL, NeurIPS 2022.</li>
+            <li>$^2$Do Current Multi-Task Optimization Methods in Deep Learning Even Help? NeurIPS 2022.</li>
+            <li>$^3$Reasonable Effectiveness of Random Weighting: A Litmus Test for MTL, TMLR 2022.</li>
+        </ul>
+    </ul>
+    <div id="left" style="width:50%;">
+        <figure><img src="/assets/images/talks/MTL/pareto-mtl-adaptive-1.png" alt="" width="100%"></figure>
+        <figurecaption style="font-size:75%;color:black">Average Accuracy on CelebA (40 Tasks)$^1$</figurecaption>
+    </div>
+    <div id="right" style="width:40%;">
+        <figure><img src="/assets/images/talks/MTL/pareto-mtl-adaptive-2.png" alt="" width="75%"></figure>
+        <figurecaption style="font-size:75%;color:black">Neural Machine Translation (En→{Fr, Zh})$^2$</figurecaption>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black;">MTL is Not Necessary a Multi-Objective Problem</h2>
+    <ul style="color:black">
+        <ul style="font-size:75%;">
+            <li><b>The Gap:</b> Training Loss -> Training Performance -> Testing Performance</li>
+            <li>A sufficiently large enough model can learn all tasks simultaneously</li>
+        </ul>
+    </ul>
+    <figure><img src="/assets/images/talks/MTL/pareto-mtl-adaptive-results.png" alt="" width="100%"></figure>
+    <hr>
+    <ul style="color:black;font-size:50%;line-height:50%">
+        <li>$^1$Lin et. al., Pareto Multi-Task Learning, NeurIPS 2019.</li>
+        <li>$^2$Ruchte and Grabocka, Multi-Task Problems are not Multi-Objective, arXiv 2021.</li>
+    </ul>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Future Direction: Task Relations and Knowledge Transfer</h2>
+    <ul>
+        <li>Task Relations:</li>
+        <ul style="font-size:75%;">
+            <li>Efficiently Identifying Task Groupings for Multi-Task Learning, NeurIPS 2022.</li>
+            <li>Auto-Lambda: Disentangling Dynamic Task Relationships, TMLR 2022.</li>
+        </ul>
+        <br>
+        <li>Knowledge Transfer:</li>
+        <ul style="font-size:75%;">
+            <li>Pareto Self-Supervised Training for Few-Shot Learning, CVPR 2021.</li>
+            <li>Pareto Domain Adaptation, NeurIPS 2021.</li>
+            <li>Enhancing Meta Learning via Multi-Objective Soft Improvement Functions, ICLR 2023.</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Future Direction: Problems with Conflicted Objectives</h2>
+    <ul>
+        <ul>
+            <li>NAS (Performance v.s. Model Size)</li>
+            <br>
+            <li>Fairness v.s. Performance</li>
+            <br>
+            <li>Model with Limited Capacity (e.g., on edge device)</li>
+            <br>
+            <li>Other Problems with Naturally Conflict Objectives</li>
+        </ul>
+    </ul>
+</section> -->
+</section>
+
+            </div>
+        </div>
+        
+        <script src="../../assets/revealjs/dist/reveal.js"></script>
+        <script src="../../assets/revealjs/plugin/notes/notes.js"></script>
+        <script src="../../assets/revealjs/plugin/markdown/markdown.js"></script>
+        <script src="../../assets/revealjs/plugin/highlight/highlight.js"></script>        
+        <script src="../../assets/revealjs/plugin/search/search.js"></script>
+        <script src="../../assets/revealjs/plugin/zoom/zoom.js"></script>
+        <script src="../../assets/revealjs/plugin/math/math.js"></script>
+        
+        <script src="../../assets/revealjs/plugin/menu/menu.js"></script>        
+        <script src="../../assets/revealjs/plugin/pdfexport/pdfexport.js"></script>
+
+        <!-- chalkboard -->
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/chalkboard/style.css">
+        <script src="../../assets/revealjs/plugin/chalkboard/plugin.js"></script>
+
+        <!-- customcontrols -->
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/customcontrols/style.css">
+        <script src="../../assets/revealjs/plugin/customcontrols/plugin.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins/menu/font-awesome/css/fontawesome.css">
+
+        <!-- chart -->
+        <script src="../../assets/revealjs/plugin/chart/Chart.min.js"></script>
+        <script src="../../assets/revealjs/plugin/chart/plugin.js"></script>
+
+        <!-- font awesome -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins/menu/font-awesome/css/fontawesome.css">
+
+        <script>
+          Reveal.initialize({
+              controls: true,
+              progress: true,
+              history: true,
+              center: true,
+              mouseWheel: true,
+              hash: true,
+              autoPlayMedia: true,
+              transition: 'fade',
+              touch: true,
+
+              katex: {
+                version: 'latest',
+                delimiters: [
+                  {left: '$$', right: '$$', display: true},
+                  {left: '$', right: '$', display: false},
+                  {left: '\\(', right: '\\)', display: false},
+                  {left: '\\[', right: '\\]', display: true}
+               ],
+               ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+              },
+
+              chalkboard: {
+                  src: "",
+                  eraser: { src: path + 'img/sponge.png', radius: 20},
+                boardmarkers : [
+                        { color: 'rgba(255,220,0,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'},
+                        { color: 'rgba(30,144,255, 1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                        { color: 'rgba(220,20,60,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                        { color: 'rgba(50,205,50,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                        { color: 'rgba(255,140,0,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                        { color: 'rgba(100,100,100,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                        { color: 'rgba(150,0,20150,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'}
+                ],
+                chalks: [
+                        { color: 'rgba(255,255,255,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                        { color: 'rgba(96, 154, 244, 0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                        { color: 'rgba(237, 20, 28, 0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                        { color: 'rgba(20, 237, 28, 0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                        { color: 'rgba(220, 133, 41, 0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                        { color: 'rgba(220,0,220,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                        { color: 'rgba(255,220,0,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+                ]
+              },
+
+              chart: {
+                defaults: {
+                  global: {
+                    title: { fontColor: "#FFF" },
+                    legend: {
+                      labels: { fontColor: "#FFF" },
+                    },
+                  },
+                  scale: {
+                    scaleLabel: { fontColor: "#FFF" },
+                    gridLines: { color: "#FFF", zeroLineColor: "#FFF" },
+                    ticks: { fontColor: "#FFF" },
+                  }
+                },
+                line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ]},
+                bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+                pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+                radar: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+              },
+
+              customcontrols: {
+                controls: [
+                    {
+                      id: 'toggle-overview',
+                      title: 'Toggle overview (O)',
+                      icon: '<i class="fa fa-th" style="color:#5DA8A3"></i>',
+                      action: 'Reveal.toggleOverview();'
+                    },
+                    { icon: '<i class="fa fa-pen-square" style="color:#5DA8A3"></i>',
+                      title: 'Toggle chalkboard (B)',
+                      action: 'RevealChalkboard.toggleChalkboard();'
+                    },
+                    { icon: '<i class="fa fa-pen" style="color:#5DA8A3"></i>',
+                      title: 'Toggle notes canvas (C)',
+                      action: 'RevealChalkboard.toggleNotesCanvas();'
+                    }
+                ]
+              },
+
+              plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealSearch, RevealChalkboard, RevealZoom, RevealMath.KaTeX, RevealMenu, PdfExport, RevealChart ]
+          });
+        </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49985752-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-49985752-2');
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8"/>
+	<!-- <title>Multi-Objective Machine Learning</title> -->
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+
+  	<!-- Customized Bootstrap + Font Awesome + Solarized -->
+  	<link href="/css/style.css" rel="stylesheet" media="screen">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="/assets/images/icons/icon-1.png"/>
+
+	<!-- Typekit -->
+	<script>
+		(function(d) {
+		var config = {
+			kitId: 'xeu8jut',
+			scriptTimeout: 3000
+		},
+		h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='//use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+		})(document);
+	</script>
+
+	<!-- MathJax -->
+	<!-- <script>
+		MathJax = {
+			tex: { inlineMath: [['$', '$'], ["\\(","\\)"]]},
+			svg: { fontCache: 'global' }
+		};
+	</script>
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script> -->
+
+	<!--KaTeX-->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			renderMathInElement(document.body, {
+				// customised options
+				// • auto-render specific keys, e.g.:
+				delimiters: [
+					{left: '$$', right: '$$', display: true},
+					{left: '$', right: '$', display: false},
+					{left: '\\(', right: '\\)', display: false},
+					{left: '\\[', right: '\\]', display: true}
+				],
+				// • rendering keys, e.g.:
+				throwOnError : false
+			});
+		});
+	</script>
+	<script>
+		window.WebFontConfig = {
+		  custom: {
+			families: ['KaTeX_AMS', 'KaTeX_Caligraphic:n4,n7', 'KaTeX_Fraktur:n4,n7',
+			  'KaTeX_Main:n4,n7,i4,i7', 'KaTeX_Math:i4,i7', 'KaTeX_Script',
+			  'KaTeX_SansSerif:n4,n7,i4', 'KaTeX_Size1', 'KaTeX_Size2', 'KaTeX_Size3',
+			  'KaTeX_Size4', 'KaTeX_Typewriter'],
+		  },
+		};
+	</script>
+	<script defer src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script>	
+
+	<script type="text/javascript"
+  		src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js">
+	</script>
+	<script>
+		$(document).ready(function() {
+			mermaid.initialize();
+		});
+	</script>
+
+	<!-- jQuery -->
+	<script src="/js/jquery.min.js"></script>
+
+	<!-- Bootstrap -->
+	<script src="/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<div id="header">
+		<nav class="navbar navbar-expand-md navbar-light bg-navbar">
+			<div class="container">
+				
+				<a class="navbar-brand" href="/">
+				</a>
+				
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<!-- <div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav nav-pills ml-auto">
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter1/">Chapter 1</a>
+						</li>
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter2/">Chapter 2</a>
+						</li>
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter3/">Chapter 3</a>
+						</li>
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter4/">Chapter 4</a>
+						</li>
+						
+						<li class="nav-link">
+						
+						<a class="mx-1" href="/chapters/chapter5/">Chapter 5</a>
+						</li>
+					</ul>
+				</div> -->
+			</div>
+		</nav>
+	</div>
+
+	<div class="container mt-4">
+
+	<div class="row">
+	<div class="col-lg-12">
+		<object class="pull-left biglogo" data="/assets/images/icons/icon-1.png" type="image/png"></object>
+		<div class="bigtitle logobox">
+			Multi-Objective Machine Learning
+		</div>
+	</div>
+</div>
+
+<div class="bigspacer"></div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="smallhead">
+      	<p>
+			Real-world applications of deep learning often have to contend with objectives beyond predictive performance, i.e., more than one equally important and competing objective or criterion. Examples include cost functions pertaining to invariance (e.g., to photometric or geometric variations), semantic independence (e.g., to age or race for face recognition systems), privacy (e.g., mitigating leakage of sensitive information), algorithmic fairness (e.g., demographic parity), generalization across multiple domains, computational complexity (FLOPs, compactness), to name a few. In such applications, achieving a single solution that simultaneously optimizes all objectives is no longer feasible; instead, finding a set of solutions that are representative in describing the trade-off among objectives becomes the goal. Multiple approaches have been developed for such problems, including simple scalarization and population-based methods. 
+		</p>
+		<p>
+			This tutorial aims to provide a comprehensive introduction to fundamentals, recent advances, and applications of multi-objective optimization (MOO), followed by hands-on coding examples. Some emerging applications of MOO include,
+			<ul>
+				<li>hardware-aware neural architecture search;</li>
+				<li>multi-task learning as multi-objective optimization;</li>
+				<li>designing neural networks for secure inference;</li>
+			</ul>
+			We will also summarize potential research directions intersecting MOO and ML/CV research.
+		</p>
+		</div>
+	</div>
+</div>
+
+<div class="bigspacer"></div>
+<div class="bigspacer"></div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="head">
+			<a class="off">Location: CVPR 2023 (Rm: West 113)</a>
+		</div>
+		<div class="spacer"></div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="head">
+			<a class="off">Schedule: Monday 19th June, 2023</a>
+		</div>
+		<div class="spacer"></div>
+	</div>
+</div>
+<table border="5" cellspacing="0" align="center">
+	<!--<caption>Timetable</caption>-->
+	<tr>
+		<td align="center" height="50"
+			width="100"><br>
+			<b>Time</b></br>
+		</td>
+		<td align="center" height="50"
+			width="100"><br>
+			<b>Title</b>
+		</td>
+		<td align="center" height="50"
+			width="100"><br>
+			<b>Speaker</b>
+		</td>
+	</tr>
+	<tr>
+		<td align="center" height="50">09:00am-9:20am</td>
+		<td align="center" height="50"><a href="/2023-cvpr/introduction/" target="_blank">Introduction</a></td>
+		<td align="center" height="50">Vishnu Boddeti</td>
+	</tr>
+	<tr><td align="center" colspan="3"><b>Foundational Concepts</b></td></tr>
+	<tr>
+		<td align="center" height="50">
+			09:20am-10:00am</td>
+		<td align="center" height="50"><a href="/2023-cvpr/chapter1.pptx" target="_blank">Introduction to Multi-Objective Optimization</a></td>
+		<td align="center" height="50">Kalyanmoy Deb</td>
+	</tr>
+	<tr>
+		<td align="center" height="50">
+			10:00am-10:30am</td>
+		<td align="center" height="50"><a href="/2023-cvpr/chapter2/" target="_blank">MOEA/D: Multi-Objective Evolutionary Algorithm Based on Decomposition</a></td>
+		<td align="center" height="50">Qingfu Zhang</td>
+	</tr>
+	<tr>
+		<td align="center" height="50">
+			10:30am-10:50am</td>
+		<td align="center" height="50">Break</td>
+		<td align="center" height="50"></td>
+	</tr>
+	<tr><td align="center" colspan="3"><b>Applications</b></td></tr>
+	<tr>
+		<td align="center" height="50">
+			10:50am-11:15am</td>
+		<td align="center" height="50"><a href="/2023-cvpr/chapter3/" target="_blank">Multi-Objective Optimization for Multi-Task Learning</a></td>
+		<td align="center" height="50">Xi Lin</td>
+	</tr>
+	<tr>
+		<td align="center" height="50">
+			11:15am-11:40am</td>
+		<td align="center" height="50"><a href="/2023-cvpr/chapter4/" target="_blank">Designing CNNs for Secure Inference</a></td>
+		<td align="center" height="50">Vishnu Boddeti</td>
+	</tr>
+	<tr>
+		<td align="center" height="50">
+			11:40am-12:05pm</td>
+		<td align="center" height="50"><a href="/2023-cvpr/chapter5.pptx" target="_blank">Multi-Objective Neural Architecture Search</a></td>
+		<td align="center" height="50">Zhichao Lu</td>
+	</tr>
+	<tr>
+		<td align="center" height="50">
+			12:05am-12:30pm</td>
+		<td align="center" height="50"><a href="/2023-cvpr/hands-on-session.ipynb">Hands-On Session Notebook</a></td>
+		<td align="center" height="50">Zhichao Lu</td>
+	</tr>
+</table>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="head">
+			<a class="off">Organizers</a>
+		</div>
+		<div class="spacer"></div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col memberbox">
+		<div class="media">
+			  <a class="float-left" href="https://vishnu.boddeti.net" target="_blank">
+				<figure>
+					<img width=160 class="mr-3" src="/assets/images/organizers/cropped-vishnu-boddeti.jpg">
+					<figcaption style="text-align: center;">Vishnu Boddeti</figcaption>
+				</figure>
+			  </a>
+		</div>
+	</div>
+	<div class="col memberbox">
+		<div class="media">
+			  <a class="float-left" href="https://www.zhichaolu.com" target="_blank">
+				<figure>
+					<img width=160 class="mr-3" src="/assets/images/organizers/cropped-zhichao-lu.jpg">
+					<figcaption style="text-align: center;">Zhichao Lu</figcaption>
+				</figure>
+			  </a>
+		</div>
+	</div>
+	<div class="col memberbox">
+		<div class="media">
+			  <a class="float-left" href="https://xi-l.github.io" target="_blank">
+				<figure>
+					<img width=160 class="mr-3" src="/assets/images/organizers/cropped-xi-lin.webp">
+					<figcaption style="text-align: center;">Xi Lin</figcaption>
+				</figure>
+			  </a>
+		</div>
+	</div>
+	<div class="col memberbox">
+		<div class="media">
+			  <a class="float-left" href="https://www.cs.cityu.edu.hk/~qzhan7/index.html" target="_blank">
+				<figure>
+					<img width=160 class="mr-3" src="/assets/images/organizers/cropped-qingfu-zhang.jpeg">
+					<figcaption style="text-align: center;">Qingfu Zhang</figcaption>
+				</figure>
+			  </a>
+		</div>
+	</div>
+	<div class="col memberbox">
+		<div class="media">
+			  <a class="float-left" href="https://www.egr.msu.edu/~kdeb/" target="_blank">
+				<figure>
+					<img width=160 class="mr-3" src="/assets/images/organizers/cropped-kalyanmoy-deb.jpg">
+					<figcaption style="text-align: center;">Kalyanmoy Deb</figcaption>
+				</figure>
+			  </a>
+		</div>
+	</div>
+</div>
+
+	</div>
+
+	<div id="footer"><span style="display:none">foo</span></div>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49985752-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-49985752-2');
+</script>
+
+
+</body>
+</html>

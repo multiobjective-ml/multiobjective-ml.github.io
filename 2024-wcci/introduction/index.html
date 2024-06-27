@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Introduction</title>
+        <meta name="author" content="Vishnu Boddeti">
+
+        <link rel="stylesheet" href="../../assets/revealjs/dist/reset.css">
+        <link rel="stylesheet" href="../../assets/revealjs/dist/reveal.css">
+        <link rel="stylesheet" href="../../assets/revealjs/dist/theme/vishnu.css" id="theme">
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/highlight/monokai.css" id="highlight-theme">
+
+        <!-- tikzjax -->
+        <link rel="stylesheet" type="text/css" href="../../assets/tikzjax/fonts.css">
+        <script src="../../assets/tikzjax/tikzjax.js"></script>
+
+        <!-- CDN for plotly and fontawesome -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://kit.fontawesome.com/7a9386c7a8.js" crossorigin="anonymous"></script>
+
+        <!-- Theme used for syntax highlighted code -->
+        <style>
+            .reveal code,
+            .reveal .formula-source,
+            .reveal a {
+                color: #3F988E;
+            }
+            .reveal code {
+                padding: 0 0.25em;
+            }
+            .reveal pre.formula-source {
+                box-shadow: none;
+                font-size: 0.8em;
+            }
+            .reveal .formula,
+            .reveal .formula-source {
+                margin: 2.5rem 0;
+            }
+            .reveal li {
+                margin: 0.65em 0;
+            }
+            .reveal .formula.bigger {
+                font-size: 1.8em;
+            }
+
+            /*https://medium.com/@mandieq/beautiful-presentations-from-markdown-who-knew-it-could-be-so-easy-d279aa7f787a*/
+
+            #left {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                float: left;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #right {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                float: right;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #center {
+                margin-left: auto;
+                margin-right: auto;
+                float: center;
+                text-align: center;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #alert {
+                background-color: #ff9800;
+                padding: 10px;
+            }
+
+            #customers {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            #customers td, #customers th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            /*#customers tr:nth-child(even){background-color: #f2f2f2;}*/
+            #customers tr:hover {background-color: #000000;}
+            #customers th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              background-color: #4CAF50;
+              color: white;
+            }
+
+            #mytable {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            #mytable td, #mytable th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            /*#mytable tr:nth-child(even){background-color: #f2f2f2;}*/
+            #mytable tr:hover {background-color: #000000;}
+            #mytable th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              color: white;
+            }
+
+            .box {
+              width: 100%;
+              background-color: #333333;
+              border: 2px solid #ccc;
+              border-radius: 5px;
+              padding: 0px;
+              margin: 0px;
+              color:#eeeeec;
+            }
+          
+            .box-header {
+              background-color: #337ab7;
+              color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+
+            .red-box-header {
+              background-color: indianred;
+              color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+
+            .green-box-header {
+              background-color: #BAB86C;
+              color: black;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+
+                <!-- Color ramp: ["#559EB1", "#6DB28B", "#8CBB68", "#AFBD4F", "#CFB541", "#E39B39", "#E56E30"] -->
+
+<section>
+    <p class="title">Multi-Objective Machine Learning</p>
+    <p class="subtitle"> WCCI Tutorial </p>
+    <p class="date">June 30, 2024</p>
+
+    <div id="left" style="width:20%;">
+        <img width=160 class="mr-3" src="/assets/images/organizers/cropped-vishnu-boddeti.jpg">
+        <figcaption style="text-align: center;"> <a href="https://hal.cse.msu.edu">Vishnu Boddeti</a></figcaption>
+    </div>
+    <div id="left" style="width:20%;">
+        <img width=160 class="mr-3" src="/assets/images/organizers/cropped-zhichao-lu.jpg">
+        <figcaption style="text-align: center;"> <a href="https://www.zhichaolu.com">Zhichao Lu</a></figcaption>
+    </div>
+    <div id="left" style="width:20%;">
+        <img width=160 class="mr-3" src="/assets/images/organizers/cropped-xi-lin.webp">
+        <figcaption style="text-align: center;"> <a href="https://xi-l.github.io">Xi Lin</a></figcaption>
+    </div>
+    <div id="left" style="width:20%;">
+        <img width=160 class="mr-3" src="/assets/images/organizers/cropped-qingfu-zhang.jpeg">
+        <figcaption style="text-align: center;"> <a href="https://www.cs.cityu.edu.hk/~qzhan7/index.html">Qingfu Zhang</a></figcaption>
+    </div>
+    <div id="left" style="width:20%;">
+        <img width=160 class="mr-3" src="/assets/images/organizers/cropped-kalyanmoy-deb.jpg">
+        <figcaption style="text-align: center;"> <a href="https://www.egr.msu.edu/~kdeb/">Kalyanmoy Deb</a></figcaption>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Standard Optimization in Deep Learning</h2>
+    <div id="left" style="width:70%;">
+        <ul>
+            <li class="fragment" data-fragment-index="0">Empirical Risk Minimization
+            $$\underset{\theta}{\operatorname{arg min}} \frac{1}{T} \sum_t l\left(f(\mathbf{x}^t;\mathbf{\theta}),\mathbf{y}^t\right) + \lambda\Omega(\mathbf{\theta})$$</li>
+            <ul class="fragment" data-fragment-index="1">
+                <li><b>Goal:</b> find a <span style="color:orange">single</span> optimal solution</li>
+                <li>Differentiable loss functions and regularizer.</li>
+                <ul><li> cross-entropy, hinge loss, MSE, $l_2$, $l_1$, etc.</li></ul>
+            </ul>
+        </ul>
+    </div>
+    <!-- <div id="right" style="width:30%;">
+        <figure class="fragment" data-fragment-index="0"><img src="/assets/images/talks/applications/bias-variance.webp" alt="" width="100%"></figure>
+    </div> -->
+</section>
+
+<section>
+    <h2 class="r-fit-text">Emerging Class of Optimization Problems</h2>
+    <div id="left" style="width:70%;">
+    <ul>
+        <li class="fragment" data-fragment-index="0"><span style="color:cyan">Multi-Objective Optimization</span>
+            $$ \underset{\theta}{\operatorname{arg min}} (f_1(\mathbf{X};\theta), f_2(\mathbf{X};\theta), \ldots, f_k(\mathbf{X};\theta))$$
+        </li>
+        <li class="fragment" data-fragment-index="1"><b>Feature:</b> <span style="color:orange;">objectives may be in conflict with each other</span></li>
+        <li class="fragment" data-fragment-index="2"><b>Goal:</b> find a <span style="color:orange">multiple</span> pareto-optimal solutions</li>
+        <li class="fragment" data-fragment-index="3"><b>Loss functions:</b> may or <span style="color:orange">may not be differentiable</span></li>
+        <li class="fragment" data-fragment-index="4"><b>Optimization variables:</b> continuous, <span style="color:orange">discrete, mixed interger</span>, etc.</li>
+    </ul>
+    </div>
+    <div id="right" style="width:30%;">
+        <br><br>
+        <figure class="fragment" data-fragment-index="0"><img src="/assets/images/talks/introduction/xkcd-388.png" alt="" width="100%"></figure>
+        <figurecaption class="fragment" data-fragment-index="0"><a href="https://xkcd.com/388/">XKCD</a></figurecaption>
+    </div>
+</section>
+
+<section>    
+<section data-background="#511EA8">
+    <h2>Where do multiple objectives arise in machine learning?</h2>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Application (1): Fairness: Utility-Fairness Trade-Off</h2>
+    <div id="left" style="width:70%;">
+        <figure><img src="/assets/images/talks/applications/utility-fairness-trade-off.svg" alt="" width="90%"></figure>
+    </div>
+    <div id="right" style="width:30%;">
+        <br><br><br>
+        <ul><li>Objectives:</li>
+            <ul>
+                <li>accuracy</li>
+                <li>demographic parity violation</li>
+            </ul>
+        </ul>
+    </div>
+    <div id="left" style="width:100%;">
+        <hr>
+        <ul style="font-size:50%">On Characterizing the Trade-off in Invariant Representation Learning, TMLR 2022</ul>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Application (2): Explainability: Accuracy-Explainability Trade-Off</h2>
+    <figure><img src="/assets/images/talks/applications/accuracy-explainability.png" alt="" width="100%"></figure>
+    <br>
+    <center>Objectives: accuracy and ease of interpretability</center>
+    <br><hr>
+    <ul style="font-size:50%">It's Just Not That Simple: An Empirical Study of the Accuracy-Explainability Trade-off in Machine Learning for Public Policy, FAccT 2022</ul>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Application (3): Neural Architecture Search</h2>
+    <figure><img src="/assets/images/talks/introduction/nas.svg" alt="" width="100%"></figure>
+    <br>
+    <center>Objectives: accuracy and latency/FLOPS/memory usage</center>
+    <hr>
+    <ul style="font-size:50%;line-height:50%">
+        <li>Lu <i>et. al.</i> Neural Architecture Transfer, TPAMI 2021</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Application (4): Multi-Task Learning</h2>
+    <figure><img src="/assets/images/talks/MTL/mtl-1.svg" alt="" width="100%"></figure>
+    <br>
+    <center>Objectives: loss for each task</center>
+    <hr>
+    <ul style="font-size:50%;line-height:50%">
+        <li>Sener and Koltun, Multi-Task Learning as Multi-Objective Optimization, NeurIPS 2018.</li>
+    </ul>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Application (5): Neural Networks over Encrypted Data</h2>
+    <figure><img src="/assets/images/talks/autofhe/overview.svg" alt="" width="90%"></figure>
+    <center>Objectives: accuracy and latency</center>
+    <hr>
+    <ul style="font-size:50%;line-height:50%">
+        <li>Wei and Boddeti, AutoFHE: Automated Adaption of CNNs for Efficient Evaluation over FHE, USENIX 2024</li>
+    </ul>
+</section>
+
+<section data-background="white">
+    <h2 class="r-fit-text" style="color:black;">Application (6): Discovering Learning Algorithms from Scratch</h2>
+    <div id="left" style="width:60%;">
+        <figure><img src="/assets/images/talks/introduction/automl-zero.png" alt="" width="100%"></figure>
+    </div>
+    <div id="right" style="width:40%;">
+        <figure><img src="/assets/images/talks/applications/moaz.gif" alt="" width="100%"></figure>
+        <figurecaption style="color:black;">Multi-Objective AutoML-Zero</figurecaption>
+    </div>
+    <div id="left" style="width:100%;">
+        <br>
+        <center style="color:black">Objectives: error and complexity of algorithm</center>
+        <hr>
+        <ul style="font-size:50%;color:black"><li>Guha <i>et. al.</i> MOAZ: A Multi-Objective AutoML-Zero Framework, GECCO 2023</li></ul>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black;" class="r-fit-text">Application (7): Learning Robotic Adaptation Policies from Scratch</h2>
+    <div id="left" style="width:40%;">
+        <figure><img src="/assets/images/talks/applications/robotics-multi-objective.png" alt="" width="100%"></figure>
+    </div>
+    <div id="right" style="width:60%;">
+        <br><br><br>
+        <video width="100%" height="auto" controls><source src="/assets/videos/robotics-multi-objective.mp4" type="video/mp4">Your browser does not support the video tag.</video>
+        <br>
+        <center style="color:black">Objectives: reward and simplicity of algorithm</center>
+    </div>
+    <div id="left" style="width:100%;">
+    <hr>
+    <ul style="font-size:50%;color:black"><li>Kelly <i>et. al.</i> Discovering Adaptable Symbolic Algorithms from Scratch, IROS 2023</li></ul>
+    </div>
+</section>
+</section>
+
+<section>
+    <section data-background="#511EA8">
+        <h2>Most Common Solution Multi Objective Optimization</h2>
+    </section>
+
+<section>
+    <h2>Weighted Sum Scalarization</h2>
+    $$
+    \begin{aligned}
+        \min & \text{ } g^{ws}(x|\lambda) = \lambda_1f_1(x) + \lambda_2f_2(x) \\
+        s.t. & \text{ } \lambda_1 + \lambda_2 = 1 \\
+        & \text{ } \lambda_1, \lambda_2 \geq 0
+    \end{aligned}
+    $$
+    <div id="left" style="width:50%;">
+        <figure class="fragment" data-fragment-index="0"><img src="/assets/images/talks/moead/slide_2c.svg" alt="" width="80%"></figure>
+    </div>
+    <div id="right" style="width:50%;">
+        <br><br>
+        <ul class="fragment" data-fragment-index="0">
+            <li>Solve optimization problem separately for each choice of $\lambda$.</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>The problem with scalarization</h2>
+    $$
+    \begin{aligned}
+        \min & \text{ } g^{ws}(x|\lambda) = \lambda_1f_1(x) + \lambda_2f_2(x) \\
+        s.t. & \text{ } \lambda_1 + \lambda_2 = 1 \\
+        & \text{ } \lambda_1, \lambda_2 \geq 0
+    \end{aligned}
+    $$
+    <div id="left" style="width:50%;">
+        <center style="color:yellow" class="fragment" data-fragment-index="0">Convex Pareto Front</center>
+        <span class="fragment" data-fragment-index="0">
+        <script type="text/tikz">
+            \begin{document}
+            \begin{tikzpicture}[domain=0:4, very thick]
+                \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+                \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+                \draw[color=cyan, domain=0.25:3.96] plot (\x,{1/\x}) node[right] {};
+                \draw[very thin,color=white!20] (0,0) grid (4.0,4.0);
+                \foreach \x in {0.25, 0.3, 0.4, 0.5, 1.0, 2.0, 3.0, 3.96}
+                {
+                    \filldraw[orange] (\x,{1/\x}) circle (2pt);
+                }
+            \end{tikzpicture}
+            \end{document}
+        </script>
+        </span>
+    </div>
+    <div id="right" style="width:50%;">
+        <center style="color:yellow" class="fragment" data-fragment-index="1">Concave Pareto Front</center>
+        <span class="fragment" data-fragment-index="1">
+        <script type="text/tikz">
+            \begin{document}
+            \begin{tikzpicture}[domain=0:4, very thick]
+            \draw[->, white] (0,0) -- (4.5,0) node[right] {$\mathcal{L}_1(\theta)$};
+            \draw[->, white] (0,0) -- (0,4.5) node[above] {$\mathcal{L}_2(\theta)$};
+            \draw[color=cyan, domain=0.3:3.96] plot (\x,{sqrt(16 - \x^2)}) node[right] {};
+            \node[white] at (4,-0.3) {$1.0$};
+            \node[white] at (-0.4,4.0) {$1.0$};
+            \draw[very thin,color=white!20] (0,0) grid (4.0,4.0);
+            \filldraw[orange] (0.3,{sqrt(16-0.3*0.3)}) circle (2pt);
+            \filldraw[orange] (3.96,{sqrt(16-3.96*3.96)}) circle (2pt);
+            \end{tikzpicture}
+            \end{document}
+        </script>
+        </span>
+    </div>
+    <div id="left" style="width:100%;">
+        <br>
+        <center style="color:orange;" class="fragment" data-fragment-index="2">Works well for convex pareto-fronts, but fails otherwise.</center>
+    </div>
+</section>
+</section>
+
+<section>
+    <section data-background="#511EA8">
+        <h2>What is this tutorial about?</h2>
+    </section>
+
+    <section>
+        <h2>Going beyond scalarization</h2>
+        <div id="left" style="width:33%">
+            <figure>
+                <img src="/assets/images/talks/MTL/mgda/mgda.gif" alt="" width="100%">
+                <figurecaption>Adaptive Methods</figurecaption>
+            </figure>
+        </div>
+        <div id="left" style="width:33%">
+            <figure>
+                <img src="/assets/images/talks/MTL/pareto-mtl/pareto_mtl.gif" alt="" width="100%">
+                <figurecaption>Pareto MTL</figurecaption>
+            </figure>
+        </div>
+        <div id="left" style="width:33%">
+            <figure>
+                <img src="/assets/images/talks/MTL/pareto-set/pareto_set_learning.gif" alt="" width="100%">
+                <figurecaption>Pareto Set Learning</figurecaption>
+            </figure>
+        </div>
+    </section>
+
+    <section data-background="white">
+        <h2 style="color:black;">Foundational Concepts</h2>
+        <div id="left" style="width:50%;">
+            <center style="color:black">Non-Dominated Sorting Genetic Algorithm</center>
+            <br><br>
+            <figure><img src="/assets/images/talks/introduction/nsga-ii.jpeg" alt="" width="80%"></figure>
+        </div>
+        <div id="right" style="width:50%;">
+            <center style="color:black">MOEA/D: Multi-Objective Evolutionary Algorithm Based on Decomposition</center>
+            <figure><img src="/assets/images/talks/introduction/moead.svg" alt="" width="80%"></figure>
+        </div>
+        <div id="left" style="width:100%;">
+            <center style="color:black;">... and more.</center>
+        </div>
+    </section>
+
+    <section>
+        <h2>A Few Applications</h2>
+        <div id="left" style="width:50%">
+            <center>Multi-Task Learning</center>
+            <figure><img src="/assets/images/talks/MTL/mtl-1.svg" alt="" width="100%"></figure>
+        </div>
+        <div id="left" style="width:50%">
+            <center>Designing CNNs for Secure Inference</center>
+            <figure><img src="/assets/images/talks/autofhe/overview.svg" alt="" width="80%"></figure>
+        </div>
+        <div id="left" style="width:100%">
+            <center>Neural Architecture Search</center>
+            <figure><img src="/assets/images/talks/introduction/nas.svg" alt="" width="80%"></figure>
+        </div>
+    </section>
+
+    <section>
+        <h2>Hands-On Demo</h2>
+        <figure><img src="/assets/images/talks/introduction/pymoo.jpeg" alt="" width="100%"></figure>
+    </section>
+</section>
+
+            </div>
+        </div>
+        
+        <script src="../../assets/revealjs/dist/reveal.js"></script>
+        <script src="../../assets/revealjs/plugin/notes/notes.js"></script>
+        <script src="../../assets/revealjs/plugin/markdown/markdown.js"></script>
+        <script src="../../assets/revealjs/plugin/highlight/highlight.js"></script>        
+        <script src="../../assets/revealjs/plugin/search/search.js"></script>
+        <script src="../../assets/revealjs/plugin/zoom/zoom.js"></script>
+        <script src="../../assets/revealjs/plugin/math/math.js"></script>
+        
+        <script src="../../assets/revealjs/plugin/menu/menu.js"></script>        
+        <script src="../../assets/revealjs/plugin/pdfexport/pdfexport.js"></script>
+
+        <!-- chalkboard -->
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/chalkboard/style.css">
+        <script src="../../assets/revealjs/plugin/chalkboard/plugin.js"></script>
+
+        <!-- customcontrols -->
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/customcontrols/style.css">
+        <script src="../../assets/revealjs/plugin/customcontrols/plugin.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins/menu/font-awesome/css/fontawesome.css">
+
+        <!-- chart -->
+        <script src="../../assets/revealjs/plugin/chart/Chart.min.js"></script>
+        <script src="../../assets/revealjs/plugin/chart/plugin.js"></script>
+
+        <!-- font awesome -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins/menu/font-awesome/css/fontawesome.css">
+
+        <script>
+          Reveal.initialize({
+              controls: true,
+              progress: true,
+              history: true,
+              center: true,
+              mouseWheel: true,
+              hash: true,
+              autoPlayMedia: true,
+              transition: 'fade',
+              touch: true,
+
+              katex: {
+                version: 'latest',
+                delimiters: [
+                  {left: '$$', right: '$$', display: true},
+                  {left: '$', right: '$', display: false},
+                  {left: '\\(', right: '\\)', display: false},
+                  {left: '\\[', right: '\\]', display: true}
+               ],
+               ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+              },
+
+              chalkboard: {
+                  src: "",
+                  eraser: { src: path + 'img/sponge.png', radius: 20},
+                boardmarkers : [
+                        { color: 'rgba(255,220,0,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'},
+                        { color: 'rgba(30,144,255, 1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                        { color: 'rgba(220,20,60,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                        { color: 'rgba(50,205,50,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                        { color: 'rgba(255,140,0,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                        { color: 'rgba(100,100,100,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                        { color: 'rgba(150,0,20150,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'}
+                ],
+                chalks: [
+                        { color: 'rgba(255,255,255,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                        { color: 'rgba(96, 154, 244, 0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                        { color: 'rgba(237, 20, 28, 0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                        { color: 'rgba(20, 237, 28, 0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                        { color: 'rgba(220, 133, 41, 0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                        { color: 'rgba(220,0,220,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                        { color: 'rgba(255,220,0,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+                ]
+              },
+
+              chart: {
+                defaults: {
+                  global: {
+                    title: { fontColor: "#FFF" },
+                    legend: {
+                      labels: { fontColor: "#FFF" },
+                    },
+                  },
+                  scale: {
+                    scaleLabel: { fontColor: "#FFF" },
+                    gridLines: { color: "#FFF", zeroLineColor: "#FFF" },
+                    ticks: { fontColor: "#FFF" },
+                  }
+                },
+                line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ]},
+                bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+                pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+                radar: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+              },
+
+              customcontrols: {
+                controls: [
+                    {
+                      id: 'toggle-overview',
+                      title: 'Toggle overview (O)',
+                      icon: '<i class="fa fa-th" style="color:#5DA8A3"></i>',
+                      action: 'Reveal.toggleOverview();'
+                    },
+                    { icon: '<i class="fa fa-pen-square" style="color:#5DA8A3"></i>',
+                      title: 'Toggle chalkboard (B)',
+                      action: 'RevealChalkboard.toggleChalkboard();'
+                    },
+                    { icon: '<i class="fa fa-pen" style="color:#5DA8A3"></i>',
+                      title: 'Toggle notes canvas (C)',
+                      action: 'RevealChalkboard.toggleNotesCanvas();'
+                    }
+                ]
+              },
+
+              plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealSearch, RevealChalkboard, RevealZoom, RevealMath.KaTeX, RevealMenu, PdfExport, RevealChart ]
+          });
+        </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49985752-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-49985752-2');
+</script>
+
+    </body>
+</html>

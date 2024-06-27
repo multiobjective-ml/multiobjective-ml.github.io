@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>MOEA/D: Multi-Objective Evolutionary Algorithm Based on Decomposition</title>
+        <meta name="author" content="Qingfu Zhang">
+
+        <link rel="stylesheet" href="../../assets/revealjs/dist/reset.css">
+        <link rel="stylesheet" href="../../assets/revealjs/dist/reveal.css">
+        <link rel="stylesheet" href="../../assets/revealjs/dist/theme/vishnu.css" id="theme">
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/highlight/monokai.css" id="highlight-theme">
+
+        <!-- tikzjax -->
+        <link rel="stylesheet" type="text/css" href="../../assets/tikzjax/fonts.css">
+        <script src="../../assets/tikzjax/tikzjax.js"></script>
+
+        <!-- CDN for plotly and fontawesome -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://kit.fontawesome.com/7a9386c7a8.js" crossorigin="anonymous"></script>
+
+        <!-- Theme used for syntax highlighted code -->
+        <style>
+            .reveal code,
+            .reveal .formula-source,
+            .reveal a {
+                color: #3F988E;
+            }
+            .reveal code {
+                padding: 0 0.25em;
+            }
+            .reveal pre.formula-source {
+                box-shadow: none;
+                font-size: 0.8em;
+            }
+            .reveal .formula,
+            .reveal .formula-source {
+                margin: 2.5rem 0;
+            }
+            .reveal li {
+                margin: 0.65em 0;
+            }
+            .reveal .formula.bigger {
+                font-size: 1.8em;
+            }
+
+            /*https://medium.com/@mandieq/beautiful-presentations-from-markdown-who-knew-it-could-be-so-easy-d279aa7f787a*/
+
+            #left {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                float: left;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #right {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                float: right;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #center {
+                margin-left: auto;
+                margin-right: auto;
+                float: center;
+                text-align: center;
+                z-index:-10;
+                font-size: 0.85em;
+                line-height: 1.5;
+            }
+
+            #alert {
+                background-color: #ff9800;
+                padding: 10px;
+            }
+
+            #customers {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            #customers td, #customers th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            /*#customers tr:nth-child(even){background-color: #f2f2f2;}*/
+            #customers tr:hover {background-color: #000000;}
+            #customers th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              background-color: #4CAF50;
+              color: white;
+            }
+
+            #mytable {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            #mytable td, #mytable th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            /*#mytable tr:nth-child(even){background-color: #f2f2f2;}*/
+            #mytable tr:hover {background-color: #000000;}
+            #mytable th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              color: white;
+            }
+
+            .box {
+              width: 100%;
+              background-color: #333333;
+              border: 2px solid #ccc;
+              border-radius: 5px;
+              padding: 0px;
+              margin: 0px;
+              color:#eeeeec;
+            }
+          
+            .box-header {
+              background-color: #337ab7;
+              color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+
+            .red-box-header {
+              background-color: indianred;
+              color: #fff;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+
+            .green-box-header {
+              background-color: #BAB86C;
+              color: black;
+              padding: 5px;
+              border-radius: 5px 5px 0 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+
+                <!-- Color ramp: ["#559EB1", "#6DB28B", "#8CBB68", "#AFBD4F", "#CFB541", "#E39B39", "#E56E30"] -->
+
+<section data-background-iframe="../../../assets/viz/gradient/">
+    <p class="title">MOEA/D: Multi-Objective Evolutionary Algorithm Based on Decomposition</p>
+    <br>
+    <p class="subtitle"> CVPR Tutorial </p>
+    <p class="author"> Qingfu Zhang </p>
+    <p class="date">June 19, 2023</p>
+</section>
+
+<section>
+    <h2 class="r-fit-text">MOEA/D=Decomposition + Collaboration</h2>
+    <ul>
+        <li style="color:cyan">Decomposition (from traditional opt)</li>
+        <ul>
+            <li>Decompose <span style="color:orange">the task</span> of approximating the PF into <span style="color:orange">$N$ subproblems</span>. Each subproblem can be single-objective or multiobjective.</li>
+        </ul>
+        <br>
+        <li style="color:yellowgreen">Collaboration (from swarm Intelligence and evolutionary computation)</li>
+        <ul>
+            <li>$N$ agents (procedures) are used.  Each agent is for a different subproblem.</li>
+            <li>These $N$ subproblems are related to one another. $N$ agents can solve these subproblems in a collaborative manner.</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+    <h2>Major Issues</h2>
+    <figure>
+        <img src="/assets/images/talks/moead/1.svg" alt="" width="50%">
+    </figure>
+    <ul>
+        <ul>
+            <li>Problem decomposition and neighborhood structure.</li>
+            <li>Search method used by each agent: memory and reproduction operators.</li>
+            <li>Collaboration: mating selection and replacement.</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>Basic MOEA/D</h2>
+</section>
+
+<section>
+    <h2>Problem Decomposition</h2>
+    <div id="left" style="width:50%">
+        <figurecaption style="font-size:75%;">Weighted Sum Approach</figurecaption>
+        <figure><img src="/assets/images/talks/moead/fig1.svg" alt="" width="60%"></figure>
+    </div>
+    <div id="left" style="width:50%">
+        <br><br>
+        <ul style="font-size:75%;">
+            <li>$\min g^{ws}(x|\lambda) = \lambda_1f_1(x) + \lambda_2f_2(x)$ where $\lambda_1 + \lambda_2 = 1$ and $\lambda_1, \lambda_2 \geq 0$.</li>
+        </ul>
+        <center style="color:orange;font-size:75%">Works only for convex pareto-front.</center>
+    </div>
+    <div id="left" style="width:100%;">
+        <figurecaption style="font-size:75%;color:cyan">Approximation of the Pareto Front $\Rightarrow$ $N$ single objective optimization problems.</figurecaption>
+        <figure><img src="/assets/images/talks/moead/fig2.svg" alt="" width="60%"></figure>
+    </div>
+</section>
+
+<section>
+    <h2>Tchebycheff Approach</h2>
+    <div id="left" style="width:60%;">
+        <div class="box" style="width:100%;font-size:75%">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$
+                    \begin{aligned}
+                        \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) \\
+                        g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) &= \max\{ \lambda_1 |f_1(\mathbf{x}) - z_1^{*}|, \lambda_2| f_2(\mathbf{x}) - z_2^{*}|\} \\
+                        \mathbf{z}^{*} &= (z_1^*, z_2^*) \text{ is a Utopian point. } \\
+                        & z_1^{*} < \min f_1 \text{ and } z_2^{*} < \min f_2
+                    \end{aligned}
+                $$
+            </div>
+        </div>
+    </div>
+    <div id="right" style="width:35%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_2a.svg" width="80%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <br>
+            <li>For any Pareto optimal solution $\mathbf{x}^{*}$, there is a $\lambda$ such that $\mathbf{x}^{*}$ is optimal to the above problem.</li>
+            <br>
+            <li> $g^T(\mathbf{x},\lambda)$ is not smooth w.r.t. $\mathbf{x}$,$\lambda$.</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Weighted $L_p$ Approach</h2>
+    <div id="left" style="width:70%">
+        <div class="box" style="width:90%;font-size:75%">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$\begin{equation}
+                    \begin{aligned}
+                        \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) \\
+                        \text{ where } & g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) = \left(\lambda_1| f_1(\mathbf{x}) - z_1^{*}|^p + \lambda_2| f_2(\mathbf{x}) - z_2^{*}|^p\right)^{\frac{1}{p}} \\
+                        \mathbf{z}^{*} &= (z_1^*, z_2^*) \text{ is a Utopian point.} \nonumber
+                    \end{aligned}
+                \end{equation}$$
+            </div>
+        </div>
+        <ul>
+            <li style="color:cyan">$p=1:$ weighted sum</li>
+            <li style="color:cyan">$p=\infty:$ Tchebycheff</li>
+        </ul>
+    </div>
+    <div id="right" style="width:30%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_2b.svg" alt="" width="100%">
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Neighboring Subproblems</h2>
+    <ul>
+        <li><b>Neighborhood:</b> measure the relationship among the subtasks</li>
+        <ul>
+            <li>Two subproblems are neighbors if their weight vectors are close.</li>
+            <li>Neighbouring subproblems should have similar objective functions and thus similar optimal solutions with high probability.
+                <center><figure><img src="/assets/images/talks/moead/slide_2c.svg" alt="" width="30%"></figure></center>
+            </li>
+            <li>Many different ways for defining neighborhood structure.</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Decomposition, Neighborhood and Memory</h2>
+    <ul>
+        <li>At each generation, each agent does the following:</li>
+        <ul>
+            <li><span style="color:orange;">Mating selection:</span> obtain the current solutions of some neighbours <span style="color: orange;">(collaboration)</span>.</li>
+            <li><span style="color:orange;">Reproduction:</span> generate a new solution by applying <span style="color:orange">reproduction operators</span> on its own solution and borrowed solutions.</li>
+        </ul>
+    </ul>
+    <div id="left" style="width:100%;">
+        <ul>
+            <ul>
+                <li><span style="color:orange">Replacement:</span></li>
+                <ul>
+                    <li>Replace its old solution by the new one if the new one is better than old one for its objective.</li>
+                    <li>Pass the new solution on to some of its neighbours, each of them replaces its old solution by this new one if it is better for its objective <span style="color:orange;">(collaboration, neighbourhood)</span>.</li>
+                </ul>
+            </ul>
+        </ul>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">Simulation Results</h2>
+    <ul style="color:black;font-size:75%">
+        <li>No of subproblems: 595, Reproduction operators: DE+Mutation</li>
+        <li>No of generation: 500</li>
+    </ul>
+    <div id="left" style="width:50%">
+        <ul style="color:black;font-size:75%">
+            <li>Test instance:</li>
+            <span style="font-size:75%">
+            $$
+            \begin{aligned}
+                f_1 &= cos(0.5x_1\pi)cos(0.5x_x\pi) + \frac{2}{|J_1|}\sum_{j\in J_1}(x_j - 2x_2sin(2\pi x_1 + \frac{j\pi}{n}))^2 \\
+                f_2 &= cos(0.5x_1\pi)sin(0.5x_x\pi) + \frac{2}{|J_2|}\sum_{j\in J_1}(x_j - 2x_2sin(2\pi x_1 + \frac{j\pi}{n}))^2 \\
+                f_3 &= sin(0.5x_1\pi) + \frac{2}{|J_3|}\sum_{j\in J_3}(x_j - 2x_2sin(2\pi x_1 + \frac{j\pi}{n}))^2 \\
+            \end{aligned}
+            $$
+            </span>
+        </ul>
+        <ul style="color:black;font-size:60%">
+            <li>$J_1 = {j|3\leq j \leq n, \text{ and } j-1 \text{ is a multiplication of 3}}$,</li>
+            <li>$J_2 = {j|3\leq j \leq n, \text{ and } j-2 \text{ is a multiplication of 3}}$,</li>
+            <li>$J_3 = {j|3\leq j \leq n, \text{ and } j \text{ is a multiplication of 3}}$</li>
+            <ul style=""><li>Pareto Surface: $x_j = 2x_2\sin(2\pi x_1 + \frac{j\pi}{n}), j=3,\dots,n$</li></ul>
+        </ul>
+    </div>
+    <div id="right" style="width:50%">
+        <figure><img src="/assets/images/talks/moead/image24.gif" alt="" width="90%"></figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <center style="color:red">Very hard and the optimal solution set is very complicated.</center>
+    </div>
+</section>
+
+<section>
+    <h2>Dynamic Resource Allocation</h2>
+    <ul>
+        <ul>
+            <li>Different subproblems (agents) require different amounts of computational resources.</li>
+            <br>
+            <li>Each subproblem (agent) has a utility value, which measures the likelihood of further improvement:
+                \[
+                Utility = \frac{\text{The amount of improvement obtained}}{\text{The amount of computational resources used}}
+                \]
+            </li>
+            <br>
+            <li>At each generation, a small number of agents are selected based on utility values and receive computational resources.</li>
+        </ul>
+    </ul>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">Simulation Results</h2>
+    <div id="left" style="width:50%">
+        <ul style="color:black;font-size:75%">
+            <li>Test instance:</li>
+            <span style="font-size:60%">
+                $$
+                \begin{aligned}
+                    f_1 &= x_1 + \frac{2}{|J_1|}\sum_{j \in J_1}\left(x_j - 0.8x_1\cos\left(6\pi x_1 + \frac{j\pi}{n}\right)\right)^2 \\
+                    f_2 &= 1 - \sqrt{x}_1 + \frac{2}{|J_2|}\sum_{j\in J_2}\left(x_j - 0.8x_1\sin\left(6\pi x_1 + \frac{j\pi}{n}\right)\right)^2\\
+                \end{aligned}
+                $$
+                Pareto Surface: $x_j = \begin{cases}
+                0.8x_1\cos\left(6\pi x_1 + \frac{j\pi}{n}\right)  & j \in J_1 \\
+                0.8x_1\sin\left(6\pi x_1 + \frac{j\pi}{n}\right) & j \in J_2
+                \end{cases}$
+            </span>
+        </ul>
+        <figure><img src="/assets/images/talks/moead/image28.gif" alt="" width="80%"></figure>
+        <figurecaption style="color:black;font-size:75%">MOEA/D</figurecaption>
+    </div>
+    <div id="right" style="width:50%">
+        <br>
+        <ul style="color:black;font-size:75%">
+            <li>No of subproblems: 300</li>
+            <li>Reproduction operators: DE+Mutation</li>
+            <li>No of generation: 100</li>
+        </ul>
+        <br>
+        <figure><img src="/assets/images/talks/moead/image29.gif" alt="" width="80%"></figure>
+        <figurecaption style="color:black;font-size:75%">MOEA/D with dynamic resource allocation</figurecaption>
+    </div>
+</section>
+
+<section>
+    <h2>Additional Remarks</h2>
+    <ul>
+        <ul>
+            <li>Diversity among subproblems leads to diversity among $\{\mathbf{x}^1, \mathbf{x}^2,\dots,\mathbf{x}^N\}$</li>
+            <br>
+            <li>MOEA/D has a well-organized memory.</li>
+            <br>
+            <li>Each agent can adopt other search methods such as heuristics (e.g., EDA, ACO and tabu search) or gradient based search.</li>
+            <br>
+            <li>Agents can be divided into several groups. Each group share some common info such as probability models.</li>
+        </ul>
+    </ul>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>More on Decomposition Methods</h2>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Penalty based boundary interaction (PBI) (Zhang & Li 2007)</h2>
+    <div id="left" style="width:50%">
+        <div class="box" style="width:100%;">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$
+                \begin{aligned}
+                \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) = d_1 + \theta d_2 \\
+                s.t. & x \in \Omega
+                \end{aligned}
+                $$
+            </div>
+            <ul>
+                <li>$\mathbf{z}^*,\lambda$ define a line direction.</li>
+                <li>$\theta > 0$ is the penalty parameter</li>
+            </ul>
+        </div>
+    </div>
+    <div id="right" style="width:50%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_4a.svg" alt="" width="75%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <ul>
+                <li>$\theta \rightarrow \infty \Rightarrow \text{PBI} \rightarrow$ NBI (Normal boundary Interaction) (Das, 1998).</li>
+                <li>Different Pareto optimal solutions can be obtained by using different direction lines.</li>
+            </ul>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Penalty based boundary interaction (PBI) (Zhang & Li 2007)</h2>
+    <div id="left" style="width:50%">
+        <ul>
+            <li>Diversity and Convergence:</li>
+        </ul>
+        <div class="box" style="width:100%;">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$
+                \begin{aligned}
+                \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) = d_1 + \theta d_2 \\
+                s.t. \text{ } & x \in \Omega
+                \end{aligned}
+                $$
+            </div>
+            <ul>
+                <li>$d_1$: <span style="color:orange;">convergence</span></li>
+                <li>$d_2$: <span style="color:orange;">diversity</span></li>
+            </ul>
+        </div>
+    </div>
+    <div id="right" style="width:50%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_4b.svg" alt="" width="80%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <li>It has been used in EMO algorithm design such as in:</li>
+            <ul>
+                <li>I-DBEA (2015)</li>
+                <li>MOEA/D-DU (2016)</li>
+                <li>$\theta$-DEA (2016)</li>
+            </ul>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2 class="r-fit-text">Penalty based boundary interaction (PBI) (Zhang & Li 2007)</h2>
+    <div id="left" style="width:50%">
+        <ul>
+            <li>Other Variants:</li>
+        </ul>
+        <div class="box" style="width:100%;">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                $$
+                \begin{aligned}
+                \min \text{ } &g^T(\mathbf{x} | \lambda, \mathbf{z}^{*}) = d_1 + \theta d_2 \\
+                s.t. \text{ } & x \in \Omega
+                \end{aligned}
+                $$
+            </div>
+        </div>
+    </div>
+    <div id="right" style="width:50%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_4c.svg" alt="" width="75%">
+        </figure>
+    </div>
+    <div id="left" style="width:100%;">
+        <ul>
+            <ul>
+                <li>$d_2$ can be replace by $\alpha$ (Chen et al, 2016)</li>
+                <li>$g$ can be replaced by other functions (Ishibuchi et al, 2016, Chen et al 2016)</li>
+                <li>NSGA-III = Pareto dominance (for convergence) + decomposition ($d_2$ for diversity) (Deb et al, 2013).</li>
+            </ul>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Inverted PBI (IPBI, Sato 2014)</h2>
+    <div id="left" style="width:50%">
+        <div class="box" style="width:100%">
+            <div class="box-header">Optimization Problem</div>
+            <div class="box-content">
+                \[
+                    \max g^{IPBI}(x|\lambda, z^*) = d_1 - \theta d_2
+                \]
+                <ul><li style="font-size:75%;">$z^+$ should be above the PF (nadir point)</li></ul>
+            </div>
+        </div>
+        <br>
+        <ul>
+            <li>Difference between PBI and IPBI:</li>
+            <ul>
+                <li>When PF=ABC, some different subproblems in IPBI have the same optimal solutions.</li>
+                <li>When PF=DEF, some different subproblems in PBI have the same optimal solutions.</li>
+            </ul>
+        </ul>
+    </div>
+    <div id="right" style="width:50%">
+        <figure>
+            <img src="/assets/images/talks/moead/slide_5b.svg" alt="" width="60%">
+        </figure>
+        <figure>
+            <img src="/assets/images/talks/moead/slide_5a.svg" alt="" width="75%">
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Constrained Decomposition</h2>
+    <figure><img src="/assets/images/talks/moead/slide_5c.svg" alt="" width="70%"></figure>
+    <div id="left" style="width:45%;">
+        <ul style="font-size:70%;">
+            <li>Single objective decomposition  (Wang et al, 2015)</li>
+            <center>
+            <div class="box" style="width:75%">
+                <div class="box-header">Optimization Problem</div>
+                <div class="box-content">
+                    $$
+                        \begin{aligned}
+                            \min g(x) &= aggregation(f_1, f_2) \\
+                            s.t. \text{ } & F(x) \in \Omega_i
+                        \end{aligned}
+                    $$
+                </div>
+            </div>
+            </center>
+        </ul>
+        <ul style="font-size:70%;"><li>Good for diversity</li></ul>
+    </div>
+    <div id="right" style="width:55%;">
+        <ul style="font-size:70%;">
+            <li>Multiple-objective to multiple-objective (M2M) (Liu et al, 2014)</li>
+            <center>
+            <div class="box" style="width:50%">
+                <div class="box-header">Optimization Problem</div>
+                <div class="box-content">
+                    $$
+                        \begin{aligned}
+                            & \min(f_1, f_2) \\
+                            & s.t. \text{ } F(x) \in \Omega_i
+                        \end{aligned}
+                    $$
+                </div>
+            </div>
+            </center>
+        </ul>
+        <ul style="font-size:75%;"><li><span style="color:orange;">MOEA/D-M2M:</span> Each agent can uses an EMO algorithm.</li></ul>
+    </div>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>Other Variants</h2>
+</section>
+
+<section>
+    <h2 class="r-fit-text">MOEA/D for Expensive Multiobjective Optimization</h2>
+    <ul><ul style="font-size:75%;">
+        <li>Expensive opt: function evaluation = expensive computer/physical experiments.</li>
+        <li>The computational budget could be very limited, say, 200 function evaluations.</li>
+        <li>Efficient Global Optimization (Bayesian Optimization) for single optimization problem do the following iteration:</li>
+        <ul>
+            <li>Using the evaluated solutions, build a probabilistic model $p(f│x)$ for objective $f(x)$.</li>
+            <li>Use $p(f|x)$ to define acquisition function $\phi(x)$ (which measures the merits of figure of evaluation of objective $f$ at $x$.</li>
+            <li>Maximize $\phi(x)$ to obtain $\bar{x}$, evaluate it.</li>
+        </ul>
+    </ul></ul>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">Experimental Results</h2>
+    <ul style="color:black;font-size:75%">
+        <li>Experiments:</li>
+        <ul>
+            <li>ZDT3: 2 objectives and 6 decision variables.</li>
+            <li>Computational budget: 150 function evaluations</li>
+        </ul>
+    </ul>
+    <div id="left" style="width:50%;">
+        <figure><img src="/assets/images/talks/moead/image55.gif" alt="" width="100%"></figure>
+        <figurecaption style="font-size:75%;color:black">MOEA/D-EGO (Zhang et al., 2009)</figurecaption>
+    </div>
+    <div id="right" style="width:50%;">
+        <figure><img src="/assets/images/talks/moead/image56.gif" alt="" width="100%"></figure>
+        <figurecaption style="font-size:75%;color:black"> DirHV-EGO (Zhao and Zhang, 2023)</figurecaption>
+    </div>
+</section>
+
+<section>
+    <h2>PLS/D for Discrete Optimization</h2>
+    <div id="left" style="width:50%;">
+        <ul>
+            <ul>
+                <li>Decompose the objective space into a number of sub-regions.</li>
+                <li>Each subregion i is associated with an aggregated objective function:
+                    \[
+                        \text{e.g., } g_{ws}(x, w_i) = 0.4f_1(x) + 0.6f_2(x)
+                    \]
+                </li>
+                <li>Agent i searches Subregion i by using a PLS guided by $g_{ws}(x, w_i)$.</li>
+            </ul>
+        </ul>
+    </div>
+    <div id="right" style="width:50%;">
+        <br><br>
+        <script type="text/tikz">
+            \begin{document}
+                \begin{tikzpicture}[domain=0:4.5, very thick]
+
+                \draw[->, white] (0,0) -- (5,0) node[right] {$f_1$};
+                \draw[->, white] (0,0) -- (0,5) node[above] {$f_2$};
+
+                \foreach \x in {0,1,2,3,4,5}
+                    \draw[orange, ->] (0,0) -- ++(18*\x:4cm) node[above right] {\color{orange} $w_{\x}$};
+
+                \foreach \x in {0,1,2,3,4}
+                    \draw[cyan, dashed] (0,0) -- ++(9 + 18*\x:4.5cm) node[above right] {};
+                
+                \end{tikzpicture}
+            \end{document}
+        </script>
+    </div>
+    <div id="left" style="width:100%">
+        <hr>
+        <ul style="font-size:50%;"><li>J. Shi, Q. Zhang, J Sun, PLS/D, IEEE Trans on Cybernetics, 2019</li></ul>
+    </div>
+</section>
+
+<section data-background="white">
+    <h2 style="color:black">Experimental Results</h2>
+    <ul style="color:black;font-size:75%"><ul>
+        <li>Test problem: multiobjective Unconstraint Binary Quadratic Programming</li>
+        <li>Reproduction operators: Pareto local search (PLS)</li>
+        <li>No of variables = 200. No. of objectives: 2 and 3</li>
+        <li>No. of regions = 11 (for 2-obj) and 66 (for 3-obj)</li>
+    </ul></ul>
+    <div id="left" style="width:25%;">
+        <figure><img src="/assets/images/talks/moead/image58.gif" alt="" width="100%"></figure>
+        <figurecaption style="color:black;font-size:75%">classic PLS (2-obj)</figurecaption>
+    </div>
+    <div id="left" style="width:25%;">
+        <figure><img src="/assets/images/talks/moead/image59.gif" alt="" width="100%"></figure>
+        <figurecaption style="color:black;font-size:75%">PPLS/D (2-obj)</figurecaption>
+    </div>
+    <div id="left" style="width:25%;">
+        <figure><img src="/assets/images/talks/moead/image60.gif" alt="" width="80%"></figure>
+        <figurecaption style="color:black;font-size:75%">classic PLS (3-obj)</figurecaption>
+    </div>
+    <div id="left" style="width:25%;">
+        <figure><img src="/assets/images/talks/moead/image61.gif" alt="" width="80%"></figure>
+        <figurecaption style="color:black;font-size:75%">PPLS/D (3-obj)</figurecaption>
+    </div>
+    <hr>
+    <ul style="color:black;font-size:50%">
+        <li>PPLS/D: Parallel Pareto Local Search Based on Decomposition, IEEE Transactions on Cybernetics, 2020</li>
+    </ul>
+</section>
+</section>
+
+<section>
+<section data-background="#511EA8">
+    <h2>Resources</h2>
+</section>
+
+<section data-background="white">
+    <a href="https://sites.google.com/view/moead" target="_"><img src="/assets/images/talks/moead/moead-20.png" alt="" width="80%"></a>
+    
+    <center><a href="https://sites.google.com/view/moead" target="_">MOEA/D Website</a></center>
+</section>
+
+<section data-background="white">
+    <h2 style="color: black;">Survey Papers on MOEA/D</h2>
+    <a href="https://ieeexplore.ieee.org/document/7564425" target="_blank"><img src="/assets/images/talks/moead/survey-1.png" alt="" width="100%" style="border:solid black"></a>
+    <a href="https://link.springer.com/chapter/10.1007/978-3-319-05170-3_31" target="_blank"><img src="/assets/images/talks/moead/survey-2.png" alt="" width="100%" style="border:solid black"></a>
+</section>
+
+<section data-background="white">
+    <h2 style="color: black;">Survey Papers on MOEA/D</h2>
+    <a href="https://ieeexplore.ieee.org/document/8998284" target="_blank"><img src="/assets/images/talks/moead/survey-3.png" alt="" width="75%" style="border:solid black"></a>
+    <a href="https://ieeexplore.ieee.org/document/9022866" target="_blank"><img src="/assets/images/talks/moead/survey-4.png" alt="" width="75%" style="border:solid black"></a>
+</section>
+</section>
+
+<section>
+    <h2>Conclusions</h2>
+    <ul>
+        <ul>
+            <li>MOEA/D= Decomposition + Collaboration, a methodology for multiobjective optimization.</li>
+            <br>
+            <li>Key design issues: decomposition, search method for each agent, collaboration.</li>
+            <br>
+            <li>Different single optimization methods can be readily used in MOEA/D framework.</li>
+            <br>
+            <li>Multiobjective optimization methods can also be integrated in MOEA/D framework.</li>
+        </ul>
+    </ul>
+</section>
+
+            </div>
+        </div>
+        
+        <script src="../../assets/revealjs/dist/reveal.js"></script>
+        <script src="../../assets/revealjs/plugin/notes/notes.js"></script>
+        <script src="../../assets/revealjs/plugin/markdown/markdown.js"></script>
+        <script src="../../assets/revealjs/plugin/highlight/highlight.js"></script>        
+        <script src="../../assets/revealjs/plugin/search/search.js"></script>
+        <script src="../../assets/revealjs/plugin/zoom/zoom.js"></script>
+        <script src="../../assets/revealjs/plugin/math/math.js"></script>
+        
+        <script src="../../assets/revealjs/plugin/menu/menu.js"></script>        
+        <script src="../../assets/revealjs/plugin/pdfexport/pdfexport.js"></script>
+
+        <!-- chalkboard -->
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/chalkboard/style.css">
+        <script src="../../assets/revealjs/plugin/chalkboard/plugin.js"></script>
+
+        <!-- customcontrols -->
+        <link rel="stylesheet" href="../../assets/revealjs/plugin/customcontrols/style.css">
+        <script src="../../assets/revealjs/plugin/customcontrols/plugin.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins/menu/font-awesome/css/fontawesome.css">
+
+        <!-- chart -->
+        <script src="../../assets/revealjs/plugin/chart/Chart.min.js"></script>
+        <script src="../../assets/revealjs/plugin/chart/plugin.js"></script>
+
+        <!-- font awesome -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins/menu/font-awesome/css/fontawesome.css">
+
+        <script>
+          Reveal.initialize({
+              controls: true,
+              progress: true,
+              history: true,
+              center: true,
+              mouseWheel: true,
+              hash: true,
+              autoPlayMedia: true,
+              transition: 'fade',
+              touch: true,
+
+              katex: {
+                version: 'latest',
+                delimiters: [
+                  {left: '$$', right: '$$', display: true},
+                  {left: '$', right: '$', display: false},
+                  {left: '\\(', right: '\\)', display: false},
+                  {left: '\\[', right: '\\]', display: true}
+               ],
+               ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+              },
+
+              chalkboard: {
+                  src: "",
+                  eraser: { src: path + 'img/sponge.png', radius: 20},
+                boardmarkers : [
+                        { color: 'rgba(255,220,0,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'},
+                        { color: 'rgba(30,144,255, 1)', cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                        { color: 'rgba(220,20,60,1)', cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                        { color: 'rgba(50,205,50,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                        { color: 'rgba(255,140,0,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                        { color: 'rgba(100,100,100,1)', cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                        { color: 'rgba(150,0,20150,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'}
+                ],
+                chalks: [
+                        { color: 'rgba(255,255,255,0.5)', cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                        { color: 'rgba(96, 154, 244, 0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                        { color: 'rgba(237, 20, 28, 0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                        { color: 'rgba(20, 237, 28, 0.5)', cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                        { color: 'rgba(220, 133, 41, 0.5)', cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                        { color: 'rgba(220,0,220,0.5)', cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                        { color: 'rgba(255,220,0,0.5)', cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+                ]
+              },
+
+              chart: {
+                defaults: {
+                  global: {
+                    title: { fontColor: "#FFF" },
+                    legend: {
+                      labels: { fontColor: "#FFF" },
+                    },
+                  },
+                  scale: {
+                    scaleLabel: { fontColor: "#FFF" },
+                    gridLines: { color: "#FFF", zeroLineColor: "#FFF" },
+                    ticks: { fontColor: "#FFF" },
+                  }
+                },
+                line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ]},
+                bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+                pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+                radar: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+              },
+
+              customcontrols: {
+                controls: [
+                    {
+                      id: 'toggle-overview',
+                      title: 'Toggle overview (O)',
+                      icon: '<i class="fa fa-th" style="color:#5DA8A3"></i>',
+                      action: 'Reveal.toggleOverview();'
+                    },
+                    { icon: '<i class="fa fa-pen-square" style="color:#5DA8A3"></i>',
+                      title: 'Toggle chalkboard (B)',
+                      action: 'RevealChalkboard.toggleChalkboard();'
+                    },
+                    { icon: '<i class="fa fa-pen" style="color:#5DA8A3"></i>',
+                      title: 'Toggle notes canvas (C)',
+                      action: 'RevealChalkboard.toggleNotesCanvas();'
+                    }
+                ]
+              },
+
+              plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealSearch, RevealChalkboard, RevealZoom, RevealMath.KaTeX, RevealMenu, PdfExport, RevealChart ]
+          });
+        </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49985752-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-49985752-2');
+</script>
+
+    </body>
+</html>
